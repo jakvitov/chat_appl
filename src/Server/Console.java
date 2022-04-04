@@ -12,11 +12,6 @@ public class Console implements Runnable {
         this.server = server;
     }
 
-    //Print a message to the console, that the server started listening on ports and is alive
-    public void MessageOnline(){
-        System.out.println("The server started listening on ports.");
-    }
-
     @Override
     public void run() {
         System.out.println("Wellcome to the server console.");
@@ -26,7 +21,7 @@ public class Console implements Runnable {
             //Command to print all currently online users
             if (command.equals("online")){
                 System.out.println("Online users: ");
-                this.server.getOnline_ids().forEach(System.out::println);
+                this.server.getOnline_ids().forEach((user)->System.out.println(user.ID));
             }
         }
     }

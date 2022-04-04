@@ -25,19 +25,21 @@ public class ClientListener {
             IOE.printStackTrace();
         }
     }
-    //A class used to get client id fromt the client
+    //A class used to get new client form reding his id fromt the client
     //The official version of the client message containg ID is \a\b<client_id>\a\b
-    public Integer getClientID (Socket clientSocket){
+    public Client getNewClient (){
         String suffix = "\\a\\b";
-        Integer result = 0;
+        Integer resultID = 0;
         try {
             String input = this.clientReader.readLine();
             if (input.length() <= 8 || !input.startsWith(suffix) || !input.endsWith(suffix)){
                 System.out.println("Wrong client input name format!");
             }
             input.replace(suffix, "");
-            result = Integer.parseInt(input);
-            return result;
+            resultID = Integer.parseInt(input);
+            //Nicks will be laster implemented as getting them from the database
+            Client resultClient = new Client(this.clientSocket, resultID, "Not_implemented");
+            return resultClient;
         }
         catch (NumberFormatException NFE){
             System.out.println("Client message includes characters!");
