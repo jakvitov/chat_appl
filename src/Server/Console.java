@@ -21,14 +21,14 @@ public class Console implements Runnable {
             //Command to print all currently online users
             if (command.equals("online ID")){
                 System.out.println("Online users: ");
-                this.server.getOnline_ids().forEach((user)->System.out.println(user.client.ID));
+                ServerInterface.database.forEach((user)->System.out.println(user.getClient().ID));
             }
             else if (command.equals("online name")){
                 System.out.println("Online users: ");
-                this.server.getOnline_ids().forEach((user)->System.out.println(user.client.nick));
+                ServerInterface.database.forEach((user)->System.out.println(user.getClient().nick));
             }
             else if (command.equals("sum")){
-                System.out.println("Total online users: " + this.server.getOnline_ids().size());
+                System.out.println("Total online users: " + ServerInterface.database.size());
             }
             else {
                 System.out.println("Unknown command: " + command);

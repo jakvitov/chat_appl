@@ -1,7 +1,6 @@
 package Server;
 
-import Server.ClientServices.Client;
-import Server.ClientServices.ClientListener;
+import Server.ClientServices.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,28 +10,45 @@ import java.util.HashSet;
 //Server interface represents the running server
 public class ServerInterface {
     private Thread console;
-    //Hash set representing id numbers of all users online
-
-    private HashSet<Client> online_clients;
+    //Database that contains currently connected clients
+    static HashSet<ClientHandler> database;
     ServerInterface(){
         //We create console and start it in a separate thread
         console = new Thread(new Console(this));
-        console.setDaemon(true);
+        console.setDaemon(false);
         console.start();
-        online_clients = new HashSet<Client>();
     }
-    //Getter for the online users, mainly used by Console class
-    public HashSet<Client> getOnline_ids() {
-        return online_clients;
-    }
-    //A function to listen for a client and add his id to the online set
-    public void ListenNewClient(int PortNumber){
-        ClientListener client = new ClientListener();
-        client.Listen(PortNumber);
-        Client new_client = client.getNewClient();
-        if (new_client != null){
-            this.online_clients.add(new_client);
+
+    public static void main(String[] args) {
+        //Those null values are safe, because all fails of opening those sockets either
+        //break the program or reset listening on port
+        ServerSocket serverSocket = null;
+        Socket clientSocket = null;
+        try {
+            serverSocket = new ServerSocket(3001);
         }
-        //If the new_client is null than the listening was not sucesfull and we do nothing
+        catch (IOException IOE){
+            System.out.println("Error in opening the server socket");
+            IOE.printStackTrace();
+            System.exit(1);
+        }
+        //Infinite loop in which we listen for clients
+        while (true){
+            try {
+                clientSocket = serverSocket.accept();
+                System.out.println("New client accepted: " + clientSocket);
+            }
+            //If we fail to accept the connection we reset the loop and start listening again
+            catch (IOException IOE){
+                System.out.println("Error while accepting the client.");
+                continue;
+            }
+            ClientHandler clHandler = new ClientHandler(clientSocket);
+            Thread clThread = new Thread(clHandler);
+            //Now we add the client to the set.
+            database.add(clHandler);
+            //And starting the client handler in a separate thread
+            clThread.start();
+        }
     }
 }
