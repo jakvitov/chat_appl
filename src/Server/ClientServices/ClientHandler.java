@@ -121,9 +121,10 @@ public class ClientHandler implements Runnable {
               if (message.getSecond().equals("wrong_target")){
                   this.clientWriter.println("\\s445 Wrong target ID\\s");
               }
-              //We remove clientHandler from the database if he logs out
+              //We remove clientHandler from the database if he logs out and we cancel this loop to stop the logged out hanler
               else if (message.getSecond().equals("logout_message")){
-                  database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
+                  ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
+                  break;
               }
               //If we failed to scan any messages we reset the loop
               else if (message.getSecond().equals("empty_message")){
@@ -132,7 +133,7 @@ public class ClientHandler implements Runnable {
           }
           //If the message is all right we search for output port in the current online database and send there the message
           boolean found = false;
-            for (ClientHandler cl : database){
+            for (ClientHandler cl : ServerInterface.database){
               if (cl.client.ID.equals(message.getFirst())){
                   cl.clientWriter.println("\\cm" + message.getSecond() + "\\cm");
                   found = true;

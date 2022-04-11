@@ -10,6 +10,7 @@ import java.util.HashSet;
 //Server interface represents the running server
 public class ServerInterface {
     private Thread console;
+    public boolean stop = false;
     //Database that contains currently connected clients
     public static HashSet<ClientHandler> database;
     ServerInterface(){
@@ -17,14 +18,17 @@ public class ServerInterface {
         console = new Thread(new Console(this));
         console.setDaemon(false);
         console.start();
+        database = new HashSet<ClientHandler>();
     }
 
     public static void main(String[] args) {
+        ServerInterface server = new ServerInterface();
         //Those null values are safe, because all fails of opening those sockets either
         //break the program or reset listening on port
         ServerSocket serverSocket = null;
         Socket clientSocket = null;
         try {
+            System.out.println("Opening server socket on port " + 3001);
             serverSocket = new ServerSocket(3001);
         }
         catch (IOException IOE){
