@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class ServerInterface {
     private Thread console;
     //Database that contains currently connected clients
-    static HashSet<ClientHandler> database;
+    public static HashSet<ClientHandler> database;
     ServerInterface(){
         //We create console and start it in a separate thread
         console = new Thread(new Console(this));
