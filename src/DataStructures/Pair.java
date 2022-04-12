@@ -1,6 +1,8 @@
 package DataStructures;
-//A basic Pair generic data structure to hold pairs of values
-//Pair has two special reserved values -1111 and -1110 to signalize errors etc.
+/**
+ * A basic Pair generic data structure to hold pairs of values
+ * Pair has two special reserved values -1111 and -1110 to signalize errors etc.
+ */
 public class Pair<T, U> {
     private T first;
     private U second;

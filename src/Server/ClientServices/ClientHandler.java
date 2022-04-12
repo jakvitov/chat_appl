@@ -1,5 +1,11 @@
 package Server.ClientServices;
 
+/**
+ * A handler class which takes care of a single client
+ * All client handlers run in a separate thread and work in a infinite cycle that breaks
+ * when the client logs out
+ */
+
 import DataStructures.Pair;
 import Server.ServerInterface;
 

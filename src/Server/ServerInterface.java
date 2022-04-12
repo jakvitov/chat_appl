@@ -1,7 +1,10 @@
 package Server;
-
 import Server.ClientServices.ClientHandler;
-
+/**
+ * The main class from where the server side is run
+ * It handles the launching of separate threads for client handlers and a debugging console
+ * This class also holds the main database of online clients
+ */
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

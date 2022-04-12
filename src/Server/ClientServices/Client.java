@@ -1,4 +1,8 @@
 package Server.ClientServices;
+/**
+ * The client data structure holding all the information about Client
+ * This class is purely used for holding the data, therefore all parameters are declared public
+ */
 
 import java.io.BufferedReader;
 import java.net.Socket;
