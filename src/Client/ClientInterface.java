@@ -38,7 +38,7 @@ public class ClientInterface {
     }
     public void logIn() {
         System.out.println("Logging in as " + this.clientID);
-        this.clientWriter.print("\\c\\" + this.clientID + "\\c\\i");
+        this.clientWriter.print("\\c\\i" + this.clientID + "\\c\\i");
         try {
             String response = this.clientReader.readLine();
             if (response.equals("\\s1 LOGGED IN \\s")){
@@ -51,7 +51,12 @@ public class ClientInterface {
             System.out.println("Error while reading the server response");
         }
     }
+    public void logOut(){
+        System.out.println("Logging out...");
+        this.clientWriter.print("\\c\\l 101 LOGOUT \\c\\l");
+    }
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();
+        client.logIn();
     }
 }
