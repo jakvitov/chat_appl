@@ -5,6 +5,7 @@ package Client;
  */
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -22,7 +23,7 @@ public class ClientInterface {
         System.out.println("Enter your client ID: ");
         this.clientID = scan.nextLine();
         try {
-            this.socket = new Socket("127.0.0.1", 3001);
+            this.socket = new Socket(InetAddress.getLocalHost().getHostAddress(), 3001);
             System.out.println("Connected!");
             this.clientWriter = new PrintWriter(this.socket.getOutputStream());
             this.clientReader =
@@ -32,6 +33,10 @@ public class ClientInterface {
             System.out.println("Unknown host!");
             u.printStackTrace();
             System.exit(1);
+        }
+        catch (java.net.ConnectException jnCE){
+            System.out.println("The server is currently offline!");
+            jnCE.printStackTrace();
         }
         catch (IOException IOE) {
             System.out.println("Error while creating the client socket");
@@ -43,7 +48,7 @@ public class ClientInterface {
     }
     public void logIn() {
         System.out.println("Logging in as " + this.clientID);
-        this.clientWriter.print("\\c\\i" + this.clientID + "\\c\\i");
+        this.clientWriter.println("\\c\\i" + this.clientID + "\\c\\i");
         try {
             String response = this.clientReader.readLine();
             if (response.equals("\\s1 LOGGED IN \\s")){
