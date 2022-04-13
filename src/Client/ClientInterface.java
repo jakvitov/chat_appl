@@ -73,7 +73,7 @@ public class ClientInterface {
         this.logger.logOut();
     }
     public void message(){
-
+        this.messenger.sendMessage();
     }
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();

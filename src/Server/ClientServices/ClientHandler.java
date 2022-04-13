@@ -20,6 +20,15 @@ public class ClientHandler implements Runnable {
     private PrintWriter clientWriter;
     private Client client;
 
+    public static void wait(int time){
+        try {
+            Thread.sleep(time);
+        }
+        catch (java.lang.InterruptedException jlIE){
+            System.out.println("Thread interrupted while sleeping!");
+        }
+    }
+
     public Client getClient() {
         return client;
     }
@@ -162,6 +171,7 @@ public class ClientHandler implements Runnable {
                   cl.clientWriter.println("\\§~\\" + message.getSecond() + "\\§~\\" + this.client.nick + "\\§~\\");
                   cl.clientWriter.flush();
                   //We confirm that we delivered the message to the client
+                  System.out.println("Confirming the message to " + this.client.nick);
                   this.clientWriter.println("\\s500 Message OK\\s");
                   this.clientWriter.flush();
                   found = true;
