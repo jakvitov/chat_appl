@@ -56,7 +56,7 @@ public class ClientInterface {
         }
 
         System.out.println("Logging in as " + this.clientID);
-        this.clientWriter.println("\\c\\i" + this.clientID + "\\c\\i");
+        this.clientWriter.println("\\c\\i\\" + this.clientID + "\\c\\i\\");
         this.clientWriter.flush();
         try {
             String response = this.clientReader.readLine();
@@ -88,7 +88,7 @@ public class ClientInterface {
         String targetID = scan.nextLine();
         System.out.println("Enter your message: ");
         String message = scan.nextLine();
-        this.clientWriter.println(targetID + "\\c\\m" + message + "\\c\\m");
+        this.clientWriter.println(targetID + "\\§\\{}\\" + message + "\\§\\{}\\");
         this.clientWriter.flush();
     }
     public static void main(String[] args) {

@@ -25,13 +25,16 @@ public class MessageListener implements Runnable {
             }
             catch (IOException IOE){
                 System.out.println("Error while reading from the socket!");
-                IOE.printStackTrace();;
+                IOE.printStackTrace();
+            }
+            if (text.equals("\\s446 Client offline \\s")){
+                System.out.println("Requested client is currently offline!");
             }
             //If the message is not valid we continue looping for the next one
-            if (!text.startsWith("\\cm") || !text.endsWith("\\cm")){
+            if (!text.startsWith("\\§~\\") || !text.endsWith("\\§~\\")){
                 continue;
             }
-            StringTokenizer tokenizer = new StringTokenizer(text, "\\cm");
+            StringTokenizer tokenizer = new StringTokenizer(text, "\\§~\\");
             String message = tokenizer.nextToken();
             System.out.println("Incomming message: " + message);
         }

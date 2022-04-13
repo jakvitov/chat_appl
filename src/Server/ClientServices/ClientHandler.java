@@ -42,7 +42,7 @@ public class ClientHandler implements Runnable {
     //The official version of the client message containg ID is \c\i<client_id>\c\i
     //This method must be used as the second, so the instance can get additional client info
     public void getNewClient () throws IllegalArgumentException {
-        String suffix = "\\c\\i";
+        String suffix = "\\c\\i\\";
         Integer resultID = 0;
         try {
             String input;
@@ -99,7 +99,7 @@ public class ClientHandler implements Runnable {
             Pair lognoutMessage = new Pair(intID, "logout_message");
             return lognoutMessage;
         }
-        StringTokenizer tokenizer = new StringTokenizer(input, "\\c\\m");
+        StringTokenizer tokenizer = new StringTokenizer(input, "\\§\\{}\\");
         String strID = tokenizer.nextToken();
         String messageText = tokenizer.nextToken();
         try {
@@ -156,7 +156,7 @@ public class ClientHandler implements Runnable {
           boolean found = false;
             for (ClientHandler cl : ServerInterface.database){
               if (cl.client.ID.equals(message.getFirst())){
-                  cl.clientWriter.println("\\cm" + message.getSecond() + "\\cm");
+                  cl.clientWriter.println("\\§~\\" + message.getSecond() + "\\§~\\");
                   cl.clientWriter.flush();
                   found = true;
               }
