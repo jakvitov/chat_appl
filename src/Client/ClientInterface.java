@@ -4,6 +4,8 @@ package Client;
  * This class is the core of the client communication with the server
  */
 
+import Client.Activity.Logger;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -13,7 +15,7 @@ import java.util.Scanner;
 public class ClientInterface {
 
     private Socket socket  = null;
-
+    private Logger logger;
     private PrintWriter clientWriter;
     private BufferedReader clientReader;
     private String clientID;
@@ -33,13 +35,13 @@ public class ClientInterface {
         this.scan = new Scanner(System.in);
         System.out.println("Enter your name: ");
         this.name = scan.nextLine();
-        this.clientID = Integer.toString(name.hashCode());
         try {
             this.socket = new Socket(InetAddress.getLocalHost().getHostAddress(), 3001);
             System.out.println("Connected!");
             this.clientWriter = new PrintWriter(this.socket.getOutputStream());
             this.clientReader =
                     new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+            this.logger = new Logger(this.clientWriter, this.clientReader);
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
@@ -60,28 +62,12 @@ public class ClientInterface {
         return clientReader;
     }
     public void logIn() {
-
         wait(1000);
 
-        System.out.println("Logging in as " + this.clientID);
-        this.clientWriter.println("\\ß\\§\\" + this.clientID + "\\ß\\§\\" + this.name + "\\ß\\§\\");
-        this.clientWriter.flush();
-        try {
-            String response = this.clientReader.readLine();
-            if (response.equals("\\s1 LOGGED IN \\s")){
-                System.out.println("Sucesfully logged in!");
-            }
-            else {
-                System.out.println("Login failed " + response);
-            }
-        } catch (IOException IOE) {
-            System.out.println("Error while reading the server response");
-        }
+        this.logger.logIn(this.name);
     }
     public void logOut(){
-        System.out.println("Logging out...");
-        this.clientWriter.print("\\c\\l 101 LOGOUT \\c\\l");
-        this.clientWriter.flush();
+        this.logger.logOut();
     }
     public void message(){
         System.out.println("Insert ID of who you want to message: ");
