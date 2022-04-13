@@ -17,9 +17,22 @@ public class ClientInterface {
     private PrintWriter clientWriter;
     private BufferedReader clientReader;
     private String clientID;
+    private String name;
     private Scanner scan;
+
+    public static void wait(int time){
+        try {
+            Thread.sleep(time);
+        }
+        catch (java.lang.InterruptedException jlIE){
+            System.out.println("Thread interrupted while sleeping!");
+        }
+    }
+
     public ClientInterface (){
         this.scan = new Scanner(System.in);
+        System.out.println("Enter your name: ");
+        this.name = scan.nextLine();
         System.out.println("Enter your client ID: ");
         this.clientID = scan.nextLine();
         try {
@@ -48,15 +61,11 @@ public class ClientInterface {
         return clientReader;
     }
     public void logIn() {
-        try{
-                Thread.sleep(1000);
-        }
-        catch (Exception IOE){
-                System.out.println("Chyba");
-        }
+
+        wait(1000);
 
         System.out.println("Logging in as " + this.clientID);
-        this.clientWriter.println("\\c\\i\\" + this.clientID + "\\c\\i\\");
+        this.clientWriter.println("\\ß\\§\\" + this.clientID + "\\ß\\§\\" + this.name + "\\ß\\§\\");
         this.clientWriter.flush();
         try {
             String response = this.clientReader.readLine();
@@ -68,14 +77,6 @@ public class ClientInterface {
             }
         } catch (IOException IOE) {
             System.out.println("Error while reading the server response");
-        }
-    }
-    public static void wait(int time){
-        try {
-            Thread.sleep(time);
-        }
-        catch (java.lang.InterruptedException jlIE){
-            System.out.println("Thread interrupted while sleeping!");
         }
     }
     public void logOut(){
