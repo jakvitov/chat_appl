@@ -43,6 +43,7 @@ public class Console implements Runnable {
             }
             else if (command.equals("stop")){
                 System.out.println("Server exits listening!");
+                System.exit(0);
                 this.server.stop = true;
             }
             else if (command.equals("help") || command.equals("?")){

@@ -161,6 +161,9 @@ public class ClientHandler implements Runnable {
               if (cl.client.ID.equals(message.getFirst())){
                   cl.clientWriter.println("\\§~\\" + message.getSecond() + "\\§~\\" + this.client.nick + "\\§~\\");
                   cl.clientWriter.flush();
+                  //We confirm that we delivered the message to the client
+                  this.clientWriter.println("\\s500 Message OK\\s");
+                  this.clientWriter.flush();
                   found = true;
               }
           }

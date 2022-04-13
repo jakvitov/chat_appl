@@ -5,6 +5,7 @@ package Client;
  */
 
 import Client.Activity.Logger;
+import Client.Activity.Messenger;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -16,6 +17,7 @@ public class ClientInterface {
 
     private Socket socket  = null;
     private Logger logger;
+    private Messenger messenger;
     private PrintWriter clientWriter;
     private BufferedReader clientReader;
     private String clientID;
@@ -42,6 +44,7 @@ public class ClientInterface {
             this.clientReader =
                     new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.logger = new Logger(this.clientWriter, this.clientReader);
+            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan);
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
@@ -70,12 +73,7 @@ public class ClientInterface {
         this.logger.logOut();
     }
     public void message(){
-        System.out.println("Insert ID of who you want to message: ");
-        String targetID = scan.nextLine();
-        System.out.println("Enter your message: ");
-        String message = scan.nextLine();
-        this.clientWriter.println(targetID + "\\§\\{}\\" + message + "\\§\\{}\\");
-        this.clientWriter.flush();
+
     }
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();

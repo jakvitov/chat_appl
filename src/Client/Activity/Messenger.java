@@ -15,7 +15,7 @@ public class Messenger {
     private BufferedReader clientReader;
     private Scanner scanner;
 
-    public void Messenger (PrintWriter clientWriter, BufferedReader clientReader, Scanner scanner){
+    public Messenger (PrintWriter clientWriter, BufferedReader clientReader, Scanner scanner){
             this.clientWriter = clientWriter;
             this.clientReader = clientReader;
             this.scanner = scanner;
@@ -47,7 +47,7 @@ public class Messenger {
         return false;
     }
 
-    public boolean sendMessage(){
+    public void sendMessage(){
         String token = "\\§\\{}\\";
         System.out.println("Insert ID of who you want to message: ");
         String targetID = this.scanner.nextLine();
@@ -55,12 +55,8 @@ public class Messenger {
         String message = this.scanner.nextLine();
         this.clientWriter.println(targetID + token + message + token);
         this.clientWriter.flush();
-        if (confirmMessage(targetID)){
-            return true;
-        }
-        else {
+        if (!confirmMessage(targetID)){
             System.out.println("Message was not delivered due to an error.");
-            return false;
         }
     }
 }
