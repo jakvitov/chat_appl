@@ -53,6 +53,7 @@ public class ServerInterface {
             database.add(clHandler);
             //And starting the client handler in a separate thread
             clThread.start();
+            System.out.println("Client handler started");
         }
     }
 }

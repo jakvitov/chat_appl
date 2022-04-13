@@ -45,13 +45,22 @@ public class ClientHandler implements Runnable {
         String suffix = "\\c\\i";
         Integer resultID = 0;
         try {
-            String input = this.clientReader.readLine();
-            if (input.length() <= 8 || !input.startsWith(suffix) || !input.endsWith(suffix)){
-                System.out.println("Wrong client input name format!");
+            String input;
+            input = this.clientReader.readLine();
+            if (input.equals(null)){
+                System.out.println("Input is null");
+                System.exit(1);
             }
-            input.replace(suffix, "");
-            resultID = Integer.parseInt(input);
+            if (!input.startsWith(suffix) || !input.endsWith(suffix)){
+                System.out.println("Wrong client input name format!");
+                System.exit(1);
+            }
+            StringTokenizer tokenizer = new StringTokenizer(input, suffix);
+            String number = tokenizer.nextToken();
+            resultID = Integer.parseInt(number);
             this.client = new Client(resultID, "not_implemented_yet");
+            this.clientWriter.println("\\s1 LOGGED IN \\s");
+            this.clientWriter.flush();
         }
         catch (NumberFormatException NFE){
             System.out.println("Client message includes characters!");
@@ -70,7 +79,15 @@ public class ClientHandler implements Runnable {
         String input;
         Integer intID = new Integer(-1111);
         try {
+            System.out.println("Listening for messages from: " + this.client.ID);
             input = this.clientReader.readLine();
+            //If an error occurs and we scan a null string as an input
+            if (input == null){
+                System.out.println("Null input in message");
+                Pair emptyMessage = new Pair(intID, "empty_message");
+                return emptyMessage;
+            }
+            System.out.println("Message recieved: " + input);
         }
         catch (IOException IOE){
             System.out.println("Error while reading the message from client reader!");
@@ -105,6 +122,7 @@ public class ClientHandler implements Runnable {
         //In case the client name has wrong format
         catch (IllegalArgumentException IAE){
             this.clientWriter.println("\\s444 Wrong client ID\\s");
+            this.clientWriter.flush();
             try {
                 this.clientSocket.close();
             }
@@ -120,9 +138,12 @@ public class ClientHandler implements Runnable {
           if (message.getFirst().equals(-1111)){
               if (message.getSecond().equals("wrong_target")){
                   this.clientWriter.println("\\s445 Wrong target ID\\s");
+                  this.clientWriter.flush();
+                  continue;
               }
               //We remove clientHandler from the database if he logs out and we cancel this loop to stop the logged out hanler
               else if (message.getSecond().equals("logout_message")){
+                  System.out.println("Logging out user: " + this.client.ID);
                   ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
                   break;
               }
@@ -136,12 +157,14 @@ public class ClientHandler implements Runnable {
             for (ClientHandler cl : ServerInterface.database){
               if (cl.client.ID.equals(message.getFirst())){
                   cl.clientWriter.println("\\cm" + message.getSecond() + "\\cm");
+                  cl.clientWriter.flush();
                   found = true;
               }
           }
             //In case the client is not found
             if (found = false) {
                 this.clientWriter.println("\\s446 Client offline \\s");
+                this.clientWriter.flush();
                 System.out.println("Error - message cannot be sent to an offline client: " + message.getFirst());
             }
         }

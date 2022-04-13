@@ -11,8 +11,8 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class ClientInterface {
-    private Socket socket  = null;
 
+    private Socket socket  = null;
 
     private PrintWriter clientWriter;
     private BufferedReader clientReader;
@@ -37,6 +37,7 @@ public class ClientInterface {
         catch (java.net.ConnectException jnCE){
             System.out.println("The server is currently offline!");
             jnCE.printStackTrace();
+            System.exit(1);
         }
         catch (IOException IOE) {
             System.out.println("Error while creating the client socket");
@@ -47,8 +48,16 @@ public class ClientInterface {
         return clientReader;
     }
     public void logIn() {
+        try{
+                Thread.sleep(1000);
+        }
+        catch (Exception IOE){
+                System.out.println("Chyba");
+        }
+
         System.out.println("Logging in as " + this.clientID);
         this.clientWriter.println("\\c\\i" + this.clientID + "\\c\\i");
+        this.clientWriter.flush();
         try {
             String response = this.clientReader.readLine();
             if (response.equals("\\s1 LOGGED IN \\s")){
@@ -61,23 +70,37 @@ public class ClientInterface {
             System.out.println("Error while reading the server response");
         }
     }
+    public static void wait(int time){
+        try {
+            Thread.sleep(time);
+        }
+        catch (java.lang.InterruptedException jlIE){
+            System.out.println("Thread interrupted while sleeping!");
+        }
+    }
     public void logOut(){
         System.out.println("Logging out...");
         this.clientWriter.print("\\c\\l 101 LOGOUT \\c\\l");
+        this.clientWriter.flush();
     }
     public void message(){
         System.out.println("Insert ID of who you want to message: ");
         String targetID = scan.nextLine();
         System.out.println("Enter your message: ");
         String message = scan.nextLine();
-        this.clientWriter.print(targetID + "\\c\\m" + message + "\\c\\m");
+        this.clientWriter.println(targetID + "\\c\\m" + message + "\\c\\m");
+        this.clientWriter.flush();
     }
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();
-        //We launch the listener
         Thread messageListener = new Thread(new MessageListener(client.getClientReader()));
         client.logIn();
-        client.message();
+
+        messageListener.start();
+        for (int i = 0; i < 5; i ++){
+            client.message();
+        }
+
         client.logOut();
     }
 }
