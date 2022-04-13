@@ -82,13 +82,12 @@ public class ClientHandler implements Runnable {
         try {
             System.out.println("Listening for messages from: " + this.client.ID);
             input = this.clientReader.readLine();
-            //If an error occurs and we scan a null string as an input
+            //If an error occurs and we scan a null string as an input, to solve this we log out the client
             if (input == null){
                 System.out.println("Null input in message");
-                Pair emptyMessage = new Pair(intID, "empty_message");
-                return emptyMessage;
+                Pair lognoutMessage = new Pair(intID, "logout_message");
+                return lognoutMessage;
             }
-            System.out.println("Message recieved: " + input);
         }
         catch (IOException IOE){
             System.out.println("Error while reading the message from client reader!");
@@ -100,9 +99,11 @@ public class ClientHandler implements Runnable {
             Pair lognoutMessage = new Pair(intID, "logout_message");
             return lognoutMessage;
         }
+        //Now we parse the message for its author and the message text
         StringTokenizer tokenizer = new StringTokenizer(input, "\\§\\{}\\");
         String strID = tokenizer.nextToken();
         String messageText = tokenizer.nextToken();
+
         try {
            intID = Integer.parseInt(strID);
         }
@@ -111,6 +112,7 @@ public class ClientHandler implements Runnable {
             Pair wrongTargetMessage = new Pair(-1111, "wrong_target");
             return wrongTargetMessage;
         }
+
         Pair rightMessage = new Pair(intID, messageText);
         return rightMessage;
     }

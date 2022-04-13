@@ -33,8 +33,7 @@ public class ClientInterface {
         this.scan = new Scanner(System.in);
         System.out.println("Enter your name: ");
         this.name = scan.nextLine();
-        System.out.println("Enter your client ID: ");
-        this.clientID = scan.nextLine();
+        this.clientID = Integer.toString(name.hashCode());
         try {
             this.socket = new Socket(InetAddress.getLocalHost().getHostAddress(), 3001);
             System.out.println("Connected!");
