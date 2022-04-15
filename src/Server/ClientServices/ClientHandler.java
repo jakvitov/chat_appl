@@ -87,6 +87,7 @@ public class ClientHandler implements Runnable {
     //The return pair represents client ID and message as a string
     public Pair<Integer, String> getMessage(){
         String input;
+        String messageToken = "\\§\\{}\\";
         Integer intID = new Integer(-1111);
         try {
             input = this.clientReader.readLine();
@@ -96,7 +97,6 @@ public class ClientHandler implements Runnable {
                 Pair lognoutMessage = new Pair(intID, "logout_message");
                 return lognoutMessage;
             }
-            System.out.println("Incomming: " + input);
         }
         catch (IOException IOE){
             System.out.println("Error while reading the message from client reader!");
@@ -113,11 +113,10 @@ public class ClientHandler implements Runnable {
             Pair message = new Pair(intID, "set_request");
             return message;
         }
-        //Now we parse the message for its author and the message text
-        StringTokenizer tokenizer = new StringTokenizer(input, "\\§\\{}\\");
+        //If the message is a normal message we start here
+        StringTokenizer tokenizer = new StringTokenizer(input, messageToken);
         String strID = tokenizer.nextToken();
         String messageText = tokenizer.nextToken();
-
         try {
            intID = Integer.parseInt(strID);
         }
@@ -165,10 +164,11 @@ public class ClientHandler implements Runnable {
                   break;
               }
               else if (message.getSecond().equals("set_request")){
-                  String output = "\\$~\\";
+                  String outputToken = "\\$~\\";
+                  String output = outputToken;
                   for (ClientHandler cl : database){
                       output += (cl.client.nick);
-                      output += ("\\$~\\");
+                      output += outputToken;
                   }
                   clientWriter.println(output);
                   clientWriter.flush();
@@ -181,12 +181,12 @@ public class ClientHandler implements Runnable {
           }
           //If the message is all right we search for output port in the current online database and send there the message
           boolean found = false;
+          String outToken = "\\§~\\";
             for (ClientHandler cl : ServerInterface.database){
               if (cl.client.ID.equals(message.getFirst())){
-                  cl.clientWriter.println("\\§~\\" + message.getSecond() + "\\§~\\" + this.client.nick + "\\§~\\");
+                  cl.clientWriter.println(outToken + message.getSecond() + outToken + this.client.nick + outToken);
                   cl.clientWriter.flush();
                   //We confirm that we delivered the message to the client
-                  System.out.println("Confirming the message to " + this.client.nick);
                   this.clientWriter.println("\\s500 Message OK\\s");
                   this.clientWriter.flush();
                   found = true;

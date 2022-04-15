@@ -87,6 +87,8 @@ public class ClientInterface {
         Thread messageListener = new Thread(new MessageListener(client.getClientReader()));
         onlineClients clients = new onlineClients(client.getClientWriter());
         Thread onlineClients = new Thread(clients);
+        messageListener.setDaemon(false);
+        onlineClients.setDaemon(false);
 
         client.logIn();
         messageListener.start();

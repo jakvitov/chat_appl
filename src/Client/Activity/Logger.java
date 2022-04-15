@@ -30,7 +30,6 @@ public class Logger {private Socket socket  = null;
 
         String clientID = Integer.toString(name.hashCode());
 
-        System.out.println("Logging in as " + clientID);
         this.clientWriter.println(token + clientID + token + name + token);
         this.clientWriter.flush();
         try {

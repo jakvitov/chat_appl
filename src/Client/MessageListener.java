@@ -54,12 +54,12 @@ public class MessageListener implements Runnable {
                 continue;
             }
             else {
-            StringTokenizer tokenizer = new StringTokenizer(text, "\\§~\\");
-            String message = tokenizer.nextToken();
-            String from = tokenizer.nextToken();
-            System.out.println("-------------------------------------------------");
-            System.out.println("Incomming message: " + message + ", from: " + from);
-            System.out.println("-------------------------------------------------");
+                StringTokenizer tokenizer = new StringTokenizer(text, "\\§~\\");
+                String message = tokenizer.nextToken();
+                String from = tokenizer.nextToken();
+                System.out.println("-------------------------------------------------");
+                System.out.println("Incomming message: " + message + ", from: " + from);
+                System.out.println("-------------------------------------------------");
             }
         }
     }
