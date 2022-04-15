@@ -50,7 +50,7 @@ public class ClientHandler implements Runnable {
     //A class used to get new client form reding his id fromt the client
     //The official version of the client message containg ID is \c\i<client_id>\c\i
     //This method must be used as the second, so the instance can get additional client info
-    public void getNewClient () throws IllegalArgumentException {
+    public boolean getNewClient () throws IllegalArgumentException {
         String suffix = "\\ß\\§\\";
         Integer resultID = 0;
         try {
@@ -58,19 +58,31 @@ public class ClientHandler implements Runnable {
             input = this.clientReader.readLine();
             if (input.equals(null)){
                 System.out.println("Input is null");
-                System.exit(1);
+                return false;
             }
             if (!input.startsWith(suffix) || !input.endsWith(suffix)){
                 System.out.println("Wrong client input name format!");
-                System.exit(1);
+                return false;
             }
             StringTokenizer tokenizer = new StringTokenizer(input, suffix);
             String number = tokenizer.nextToken();
             String name = tokenizer.nextToken();
             resultID = Integer.parseInt(number);
+
+            //Now we need to check if that name is original
+            for (ClientHandler cl : database){
+                if (cl.client != null && cl.client.ID.equals(resultID)){
+                    System.out.println("Name is already taken!");
+                    this.clientWriter.println("\\s444 Wrong client ID\\s");
+                    this.clientWriter.flush();
+                    return false;
+                }
+            }
+
             this.client = new Client(resultID, name);
             this.clientWriter.println("\\s1 LOGGED IN \\s");
             this.clientWriter.flush();
+            return true;
         }
         catch (NumberFormatException NFE){
             System.out.println("Client message includes characters!");
@@ -133,7 +145,9 @@ public class ClientHandler implements Runnable {
     public void run() {
         //First we get new clients id and initialize client variable
         try {
-            this.getNewClient();
+            while (this.getNewClient() == false){
+                continue;
+            }
         }
         //In case the client name has wrong format
         catch (IllegalArgumentException IAE){
@@ -167,8 +181,10 @@ public class ClientHandler implements Runnable {
                   String outputToken = "\\$~\\";
                   String output = outputToken;
                   for (ClientHandler cl : database){
-                      output += (cl.client.nick);
-                      output += outputToken;
+                      if (cl.client != null){
+                        output += (cl.client.nick);
+                        output += outputToken;
+                      }
                   }
                   clientWriter.println(output);
                   clientWriter.flush();

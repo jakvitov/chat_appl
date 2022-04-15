@@ -55,7 +55,6 @@ public class ClientInterface {
             this.logger = new Logger(this.clientWriter, this.clientReader);
             this.archive = new Archive();
             this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan, this.archive);
-            System.out.println("Archive initialized!!");
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
@@ -81,8 +80,11 @@ public class ClientInterface {
     }
 
     public void logIn() {
-        wait(1000);
-        this.logger.logIn(this.name);
+        while (this.logger.logIn(this.name) == false){
+            System.out.println("Enter your name: ");
+            this.name = scan.nextLine();
+            wait(100);
+        }
     }
     public void logOut(){
         this.logger.logOut();

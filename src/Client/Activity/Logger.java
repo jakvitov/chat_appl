@@ -38,6 +38,10 @@ public class Logger {private Socket socket  = null;
                 System.out.println("Sucesfully logged in!");
                 return true;
             }
+            else if (response.equals("\\s444 Wrong client ID\\s")){
+                System.out.println("Name is already taken!");
+                return false;
+            }
             else {
                 System.out.println("Login failed " + response);
                 return false;
