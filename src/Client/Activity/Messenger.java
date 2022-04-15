@@ -23,8 +23,8 @@ public class Messenger {
 
     public void sendMessage(){
         String token = "\\§\\{}\\";
-        System.out.println("Insert ID of who you want to message: ");
-        String targetID = this.scanner.nextLine();
+        System.out.println("Insert username of who you want to message: ");
+        String targetID = Integer.toString(this.scanner.nextLine().hashCode());
         System.out.println("Enter your message: ");
         String message = this.scanner.nextLine();
         this.clientWriter.println(targetID + token + message + token);

@@ -66,7 +66,6 @@ public class ClientInterface {
     }
     public void logIn() {
         wait(1000);
-
         this.logger.logIn(this.name);
     }
     public void logOut(){
