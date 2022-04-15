@@ -84,13 +84,32 @@ public class ClientInterface {
         ClientInterface client = new ClientInterface();
 
         Thread messageListener = new Thread(new MessageListener(client.getClientReader()));
-        Thread onlineClients = new Thread(new onlineClients(client.getClientWriter()));
+        onlineClients clients = new onlineClients(client.getClientWriter());
+        Thread onlineClients = new Thread(clients);
 
         client.logIn();
         messageListener.start();
         onlineClients.start();
-        for (int i = 0; i < 10; i++){
-            client.message();
+
+        while (true){
+            System.out.println("What do you want to do?");
+            System.out.println("Write \"help\" to see your options");
+            String command = client.scan.nextLine();
+
+            if (command.equals("message")){
+                client.message();
+            }
+            else if (command.equals("online")){
+                clients.printOnline();
+            }
+            else if (command.equals("help")){
+                System.out.println("message");
+                System.out.println("online");
+                System.out.println("stop");
+            }
+            else if (command.equals("stop")){
+                break;
+            }
         }
         client.logOut();
     }

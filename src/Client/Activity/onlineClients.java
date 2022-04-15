@@ -49,15 +49,18 @@ public class onlineClients implements Runnable{
         this.clientWriter.flush();
     }
 
+    public void printOnline(){
+        System.out.println("--------------------------");
+        System.out.println("Online clients:");
+        onlineClients.forEach(System.out::println);
+        System.out.println("--------------------------");
+    }
+
     @Override
     public void run (){
         while (true) {
             wait(this.refreshTime);
             this.refreshList();
-            System.out.println("--------------------------");
-            System.out.println("Online clients:");
-            onlineClients.forEach(System.out::println);
-            System.out.println("--------------------------");
         }
     }
 }
