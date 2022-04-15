@@ -46,6 +46,7 @@ public class onlineClients implements Runnable{
     //We only send the request to the server, the respond is taken care of by the MessangeListener class
     public void refreshList(){
         this.clientWriter.println("\\§\\§\\ONLINE SET\\§\\§\\");
+        this.clientWriter.flush();
     }
 
     @Override

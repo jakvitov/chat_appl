@@ -89,7 +89,6 @@ public class ClientHandler implements Runnable {
         String input;
         Integer intID = new Integer(-1111);
         try {
-            System.out.println("Listening for messages from: " + this.client.ID);
             input = this.clientReader.readLine();
             //If an error occurs and we scan a null string as an input, to solve this we log out the client
             if (input == null){
@@ -107,6 +106,11 @@ public class ClientHandler implements Runnable {
         if (input.equals("\\c\\l 101 LOGOUT \\c\\l")){
             Pair lognoutMessage = new Pair(intID, "logout_message");
             return lognoutMessage;
+        }
+        //If the client is requesting names of the online clients available
+        else if (input.equals("\\§\\§\\ONLINE SET\\§\\§\\")){
+            Pair message = new Pair(intID, "set_request");
+            return message;
         }
         //Now we parse the message for its author and the message text
         StringTokenizer tokenizer = new StringTokenizer(input, "\\§\\{}\\");
@@ -158,6 +162,17 @@ public class ClientHandler implements Runnable {
                   System.out.println("Logging out user: " + this.client.ID);
                   ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
                   break;
+              }
+              else if (message.getSecond().equals("set_request")){
+                  String output = "\\$~\\";
+                  for (ClientHandler cl : database){
+                      output += (cl.client.nick);
+                      output += ("\\$~\\");
+                  }
+                  System.out.println(output);
+                  clientWriter.println(output);
+                  clientWriter.flush();
+                  continue;
               }
               //If we failed to scan any messages we reset the loop
               else if (message.getSecond().equals("empty_message")){
