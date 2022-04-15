@@ -1,4 +1,5 @@
 package Client;
+
 /**
  * A basic Console client Interface
  * This class is the core of the client communication with the server

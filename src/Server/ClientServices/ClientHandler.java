@@ -96,6 +96,7 @@ public class ClientHandler implements Runnable {
                 Pair lognoutMessage = new Pair(intID, "logout_message");
                 return lognoutMessage;
             }
+            System.out.println("Incomming: " + input);
         }
         catch (IOException IOE){
             System.out.println("Error while reading the message from client reader!");
@@ -103,7 +104,7 @@ public class ClientHandler implements Runnable {
             return emptyMessage;
         }
         //In case the client is logging out we receive special pair for logout
-        if (input.equals("\\c\\l 101 LOGOUT \\c\\l")){
+        if (input.contains("\\c\\l 101 LOGOUT \\c\\l")){
             Pair lognoutMessage = new Pair(intID, "logout_message");
             return lognoutMessage;
         }
@@ -169,7 +170,6 @@ public class ClientHandler implements Runnable {
                       output += (cl.client.nick);
                       output += ("\\$~\\");
                   }
-                  System.out.println(output);
                   clientWriter.println(output);
                   clientWriter.flush();
                   continue;

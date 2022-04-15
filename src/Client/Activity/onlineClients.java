@@ -24,7 +24,7 @@ public class onlineClients implements Runnable{
     public onlineClients (PrintWriter clientWriter) {
             this.clientWriter = clientWriter;
             this.onlineClients = Collections.synchronizedSet(new HashSet<String>());
-            this.refreshTime = 5000;
+            this.refreshTime = 10000;
     }
 
     //Overloaded constructor in case we want to control refresh time
