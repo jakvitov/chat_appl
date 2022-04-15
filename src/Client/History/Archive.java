@@ -52,9 +52,11 @@ public class Archive {
 
     //A method used to print a particular conversation with one person
     public void printConversation(String target){
+        System.out.println("--------------------------------------");
         if (data.containsKey(target)){
             data.get(target).forEach(System.out::println);
         }
+        System.out.println("--------------------------------------");
     }
 
 }

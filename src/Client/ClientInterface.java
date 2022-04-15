@@ -8,12 +8,14 @@ package Client;
 import Client.Activity.Logger;
 import Client.Activity.Messenger;
 import Client.Activity.onlineClients;
+import Client.History.Archive;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class ClientInterface {
 
@@ -25,6 +27,7 @@ public class ClientInterface {
     private String clientID;
     private String name;
     private Scanner scan;
+    private Archive archive;
 
     public static void wait(int time){
         try {
@@ -33,6 +36,10 @@ public class ClientInterface {
         catch (java.lang.InterruptedException jlIE){
             System.out.println("Thread interrupted while sleeping!");
         }
+    }
+
+    public Archive getArchive() {
+        return archive;
     }
 
     public ClientInterface (){
@@ -46,7 +53,9 @@ public class ClientInterface {
             this.clientReader =
                     new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.logger = new Logger(this.clientWriter, this.clientReader);
-            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan);
+            this.archive = new Archive();
+            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan, this.archive);
+            System.out.println("Archive initialized!!");
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
@@ -84,7 +93,7 @@ public class ClientInterface {
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();
 
-        Thread messageListener = new Thread(new MessageListener(client.getClientReader()));
+        Thread messageListener = new Thread(new MessageListener(client.getClientReader(), client.getArchive()));
         onlineClients clients = new onlineClients(client.getClientWriter());
         Thread onlineClients = new Thread(clients);
         messageListener.setDaemon(false);
@@ -109,6 +118,16 @@ public class ClientInterface {
                 System.out.println("message");
                 System.out.println("online");
                 System.out.println("stop");
+                System.out.println("show + nick");
+            }
+            else if (command.contains("show")){
+                StringTokenizer tokenizer = new StringTokenizer(command, " ");
+                if (tokenizer.countTokens() >= 2){
+                    tokenizer.nextToken();
+                    String target = tokenizer.nextToken();
+                    System.out.println("Showing history for " + target);
+                    client.archive.printConversation(target);
+                }
             }
             else if (command.equals("stop")){
                 break;

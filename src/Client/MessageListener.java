@@ -1,5 +1,7 @@
 package Client;
 
+import Client.History.Archive;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -13,9 +15,11 @@ import static Client.Activity.onlineClients.onlineClients;
 public class MessageListener implements Runnable {
 
     private BufferedReader clientReader;
+    private Archive archive;
 
-    MessageListener(BufferedReader inputReader){
+    MessageListener(BufferedReader inputReader, Archive archive){
         this.clientReader = inputReader;
+        this.archive = archive;
     }
 
     @Override
@@ -58,8 +62,9 @@ public class MessageListener implements Runnable {
                 String message = tokenizer.nextToken();
                 String from = tokenizer.nextToken();
                 System.out.println("-------------------------------------------------");
-                System.out.println("Incomming message: " + message + ", from: " + from);
+                System.out.println("Incomming message from: " + from);
                 System.out.println("-------------------------------------------------");
+                this.archive.addInMessage(from, message);
             }
         }
     }
