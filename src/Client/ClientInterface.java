@@ -6,6 +6,7 @@ package Client;
 
 import Client.Activity.Logger;
 import Client.Activity.Messenger;
+import Client.Activity.onlineClients;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -64,6 +65,11 @@ public class ClientInterface {
     public BufferedReader getClientReader() {
         return clientReader;
     }
+
+    public PrintWriter getClientWriter() {
+        return clientWriter;
+    }
+
     public void logIn() {
         wait(1000);
         this.logger.logIn(this.name);
@@ -76,14 +82,16 @@ public class ClientInterface {
     }
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();
-        Thread messageListener = new Thread(new MessageListener(client.getClientReader()));
-        client.logIn();
 
+        Thread messageListener = new Thread(new MessageListener(client.getClientReader()));
+        Thread onlineClients = new Thread(new onlineClients(client.getClientWriter()));
+
+        client.logIn();
         messageListener.start();
-        for (int i = 0; i < 5; i ++){
+        onlineClients.start();
+        for (int i = 0; i < 10; i++){
             client.message();
         }
-
         client.logOut();
     }
 }
