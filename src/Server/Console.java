@@ -22,6 +22,7 @@ public class Console implements Runnable {
             System.out.print("-> ");
             String command = this.scan.nextLine();
             //Command to print all currently online users
+            //todo add if so we cannot loop trough null users - those who connected, but not yet added their names
             if (command.equals("online ID")){
                 System.out.println("Online users: ");
                 if (ServerInterface.database.isEmpty()){
@@ -46,6 +47,7 @@ public class Console implements Runnable {
             }
             else if (command.equals("stop")){
                 System.out.println("Server exits listening!");
+                System.exit(0);
                 this.server.stop = true;
             }
             else if (command.equals("help") || command.equals("?")){
