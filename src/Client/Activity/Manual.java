@@ -5,28 +5,46 @@ import java.util.Scanner;
 
 /**
  * This class does display basic commands options to the client
+ * If the file with the manual is not found, we print error message instead of the man
+ * on the request
  */
 public class Manual {
 
     private File manFile;
     private Scanner reader;
+    private boolean canRead;
 
-    public void Manual () throws FileNotFoundException {
-        this.manFile = new File("Text/manualText");
+    //We open all the streams, if we cannot read from the file, we set the flag
+    //and we notify the client
+    public void Manual (){
+        this.manFile = new File("src/Client/Text/manualText");
 
-        if (!manFile.exists() || !manFile.canRead()){
-            System.out.println("Error while reading from the manual text file!");
-            throw new FileNotFoundException("Error while reading from the file!");
+        if (!manFile.exists() || !manFile.canRead()) {
+            this.canRead = false;
+            return;
         }
 
-        this.reader = new Scanner(this.manFile);
+        try {
+            this.reader = new Scanner(this.manFile);
+        }
+        catch (FileNotFoundException FNFE){
+            this.canRead = false;
+            return;
+        }
+
+        this.canRead = true;
     }
 
     public void show (){
-        String line = new String();
-        while (line != null){
-            line = reader.nextLine();
-            System.out.println(line);
+        if (this.canRead == true){
+            String line = new String();
+            while (reader.hasNext()){
+                line = reader.nextLine();
+                System.out.println(line);
+            }
+        }
+        else {
+            System.out.println("The manual text file cannot be found!");
         }
     }
 

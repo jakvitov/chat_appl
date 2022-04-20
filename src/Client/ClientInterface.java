@@ -6,6 +6,7 @@ package Client;
  */
 
 import Client.Activity.Logger;
+import Client.Activity.Manual;
 import Client.Activity.Messenger;
 import Client.Activity.onlineClients;
 import Client.History.Archive;
@@ -58,12 +59,10 @@ public class ClientInterface {
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
-            u.printStackTrace();
             System.exit(1);
         }
         catch (java.net.ConnectException jnCE){
             System.out.println("The server is currently offline!");
-            jnCE.printStackTrace();
             System.exit(1);
         }
         catch (IOException IOE) {
@@ -94,6 +93,7 @@ public class ClientInterface {
     }
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();
+        Manual man = new Manual();
 
         Thread messageListener = new Thread(new MessageListener(client.getClientReader(), client.getArchive()));
         onlineClients clients = new onlineClients(client.getClientWriter());
@@ -106,8 +106,12 @@ public class ClientInterface {
         onlineClients.start();
 
         while (true){
+
+            System.out.println("------------------------------------");
             System.out.println("What do you want to do?");
             System.out.println("Write \"help\" to see your options");
+            System.out.println("------------------------------------");
+
             String command = client.scan.nextLine();
 
             if (command.equals("message")){
@@ -116,11 +120,8 @@ public class ClientInterface {
             else if (command.equals("online")){
                 clients.printOnline();
             }
-            else if (command.equals("help")){
-                System.out.println("message");
-                System.out.println("online");
-                System.out.println("stop");
-                System.out.println("show + nick");
+            else if (command.equals("help") || command.equals("?")){
+                man.show();
             }
             else if (command.contains("show")){
                 StringTokenizer tokenizer = new StringTokenizer(command, " ");
