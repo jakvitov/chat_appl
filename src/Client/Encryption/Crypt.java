@@ -2,23 +2,24 @@ package Client.Encryption;
 
 import com.sun.security.jgss.GSSUtil;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.KeySpec;
+import java.util.Base64;
 
 /**
- * A basic encryption class that will handle message encryption for this software
+ * This class is used for basic encryption and its setup. We translate here only arrays of bytes
  */
 
 public class Crypt {
 
-    private final String algo = "AES/CBC/PKCS5PADDING";
+    private final String algo = "AES/CBC/PKCS5Padding";
 
     //A method used to generate our encryption key using the given seed
     public SecretKey createKey (String hash){
@@ -42,13 +43,27 @@ public class Crypt {
 
     }
 
+    //Get key from name
+    public SecretKey getKeyFromName(String name, String salt){
+        try {
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(name.toCharArray(), salt.getBytes(), 65536, 256);
+        SecretKey finalKey = new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+        return finalKey;
+        }
+        catch (Exception e){
+            System.out.println("Error while initialising the key factory!");
+        }
+        return null;
+    }
+
     public byte [] createInitializationVector (SecureRandom random){
         byte[] initVector = new byte[16];
         random.nextBytes(initVector);
         return initVector;
     }
 
-    public byte[] encrypt(byte [] source, SecretKey key, byte [] initVector){
+    public String encrypt(String source, SecretKey key, byte [] initVector){
 
         Cipher cipher;
         try {
@@ -66,7 +81,8 @@ public class Crypt {
 
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
-            return cipher.doFinal(source);
+            byte [] result = cipher.doFinal(source.getBytes());
+            return Base64.getEncoder().encodeToString(result);
         }
         catch (Exception e){
             System.out.println("Error while encrypting the message.");
@@ -74,7 +90,7 @@ public class Crypt {
         }
     }
 
-    public String decrypt(byte [] cypherText, SecretKey key, byte [] initVector){
+    public String decrypt(String cipherText, SecretKey key, byte [] initVector){
 
         Cipher cipher;
         try {
@@ -93,28 +109,12 @@ public class Crypt {
 
         try {
             cipher.init(Cipher.DECRYPT_MODE, key, ivParameterSpec);
-            byte [] result = cipher.doFinal(cypherText);
+            byte [] result = cipher.doFinal(Base64.getDecoder().decode(cipherText));
             return new String(result);
         }
         catch (Exception e){
-            System.out.println("Error while encrypting the message.");
+            System.out.println("Error while decrypting the message.");
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        String a = "Encryption and Decryption using the symmetric key: The following steps can be followed in order to perform the encryption and decryption. ";
-        byte [] message = a.getBytes(StandardCharsets.UTF_8);
-        Crypt cr = new Crypt();
-        String hash = "9919191999999999999999999999991919191999";
-        SecretKey key = cr.createKey("9919191999999999999999999999991919191999");
-        byte [] vector = cr.createInitializationVector(new SecureRandom(hash.getBytes(StandardCharsets.UTF_8)));
-
-        byte [] cypherText = cr.encrypt(message, key, vector);
-        System.out.println(new String(cypherText));
-
-        System.out.println(cr.decrypt(cypherText, key, vector));
-
-    }
-
 }
