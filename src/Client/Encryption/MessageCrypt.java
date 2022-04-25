@@ -29,7 +29,7 @@ public class MessageCrypt {
     public String encryptMessage (String target, String message){
        SecretKey key = this.crypt.getKeyFromName(target, target);
        byte [] initVector = this.crypt.createInitializationVector(new SecureRandom(target.getBytes(StandardCharsets.UTF_8)));
-       String cipherText = this.crypt.encrypt(message, this.myKey, this.myInitVector);
+       String cipherText = this.crypt.encrypt(message, key, initVector);
        return cipherText;
     }
 

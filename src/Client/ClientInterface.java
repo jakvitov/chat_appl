@@ -9,6 +9,7 @@ import Client.Activity.Logger;
 import Client.Activity.Manual;
 import Client.Activity.Messenger;
 import Client.Activity.onlineClients;
+import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 
 import java.io.*;
@@ -29,6 +30,7 @@ public class ClientInterface {
     private String name;
     private Scanner scan;
     private Archive archive;
+    private MessageCrypt crypt;
 
     public static void wait(int time){
         try {
@@ -54,8 +56,9 @@ public class ClientInterface {
             this.clientReader =
                     new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
             this.logger = new Logger(this.clientWriter, this.clientReader);
+            this.crypt = new MessageCrypt(name);
             this.archive = new Archive();
-            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan, this.archive);
+            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan, this.archive, this.crypt);
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
@@ -95,7 +98,7 @@ public class ClientInterface {
         ClientInterface client = new ClientInterface();
         Manual man = new Manual();
 
-        Thread messageListener = new Thread(new MessageListener(client.getClientReader(), client.getArchive()));
+        Thread messageListener = new Thread(new MessageListener(client.getClientReader(), client.getArchive(), client.crypt));
         onlineClients clients = new onlineClients(client.getClientWriter());
         Thread onlineClients = new Thread(clients);
         messageListener.setDaemon(false);

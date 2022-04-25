@@ -1,5 +1,6 @@
 package Client;
 
+import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 
 import java.io.BufferedReader;
@@ -16,10 +17,12 @@ public class MessageListener implements Runnable {
 
     private BufferedReader clientReader;
     private Archive archive;
+    private MessageCrypt crypt;
 
-    MessageListener(BufferedReader inputReader, Archive archive){
+    MessageListener(BufferedReader inputReader, Archive archive, MessageCrypt crypt){
         this.clientReader = inputReader;
         this.archive = archive;
+        this.crypt = crypt;
     }
 
     @Override
@@ -64,7 +67,8 @@ public class MessageListener implements Runnable {
                 System.out.println("-------------------------------------------------");
                 System.out.println("Incomming message from: " + from);
                 System.out.println("-------------------------------------------------");
-                this.archive.addInMessage(from, message);
+                String finalMessage = crypt.decryptMessage(message);
+                this.archive.addInMessage(from, finalMessage);
             }
         }
     }

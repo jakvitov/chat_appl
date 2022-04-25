@@ -59,7 +59,9 @@ public class Crypt {
 
     public byte [] createInitializationVector (SecureRandom random){
         byte[] initVector = new byte[16];
-        random.nextBytes(initVector);
+        for (int i = 0; i < 15; i ++){
+            initVector[i] = (byte)i;
+        }
         return initVector;
     }
 
