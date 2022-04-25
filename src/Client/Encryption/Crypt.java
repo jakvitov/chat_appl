@@ -57,12 +57,22 @@ public class Crypt {
         return null;
     }
 
-    public byte [] createInitializationVector (SecureRandom random){
-        byte[] initVector = new byte[16];
-        for (int i = 0; i < 15; i ++){
-            initVector[i] = (byte)i;
+    public byte [] createInitializationVector (String name){
+        byte [] hash = Integer.toString(name.hashCode()).getBytes();
+        byte [] result = new byte[16];
+
+        for (int i = 0; i < Math.min(17, hash.length); i ++){
+            result[i] = hash[i];
         }
-        return initVector;
+
+        //If the hash is too short we need to expand it to 16 characters
+        if (hash.length < 16){
+            for (int i = hash.length - 1; i < 16; i++){
+                result[i] = '1';
+            }
+        }
+
+        return result;
     }
 
     public String encrypt(String source, SecretKey key, byte [] initVector){

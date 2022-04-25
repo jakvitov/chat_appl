@@ -23,12 +23,12 @@ public class MessageCrypt {
     public MessageCrypt(String name){
             this.crypt = new Crypt();
             this.myKey = crypt.getKeyFromName(name, name);
-            this.myInitVector = crypt.createInitializationVector(new SecureRandom(name.getBytes(StandardCharsets.UTF_8)));
+            this.myInitVector = crypt.createInitializationVector(name);
     }
 
     public String encryptMessage (String target, String message){
        SecretKey key = this.crypt.getKeyFromName(target, target);
-       byte [] initVector = this.crypt.createInitializationVector(new SecureRandom(target.getBytes(StandardCharsets.UTF_8)));
+       byte [] initVector = this.crypt.createInitializationVector(target);
        String cipherText = this.crypt.encrypt(message, key, initVector);
        return cipherText;
     }
