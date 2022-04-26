@@ -13,7 +13,7 @@ import java.util.Scanner;
  * This class is mostly used by the ClientInterface to do its job
  */
 
-public class Logger {private Socket socket  = null;
+public class Logger {
 
     private PrintWriter clientWriter;
     private BufferedReader clientReader;

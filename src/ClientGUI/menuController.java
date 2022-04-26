@@ -1,5 +1,6 @@
 package ClientGUI;
 
+import Client.ClientBackend;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +17,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class menuController {
+
+    private ClientBackend clientBackend;
 
     @FXML
     private BorderPane menuPane;
@@ -94,6 +97,9 @@ public class menuController {
     }
 
     public void initialize(){
+
+        clientBackend = new ClientBackend();
+
         onlineList.getItems().add("\uD83D\uDFE2" + " Petr");
         onlineList.getItems().add("\uD83D\uDFE2" + " Pavel");
         onlineList.getItems().add("\uD83D\uDFE2" + " Ondřej");
