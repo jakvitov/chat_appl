@@ -1,10 +1,13 @@
 package Client.Activity;
 
+import javafx.scene.control.ListView;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,12 +23,20 @@ public class onlineClients implements Runnable{
     public static Set<String> onlineClients;
     private PrintWriter clientWriter;
     private int refreshTime;
+    private ListView displayList;
 
     public onlineClients (PrintWriter clientWriter) {
             this.clientWriter = clientWriter;
             this.onlineClients = Collections.synchronizedSet(new HashSet<String>());
             this.refreshTime = 10000;
     }
+    public onlineClients (PrintWriter clientWriter, ListView displayList) {
+        this.clientWriter = clientWriter;
+        this.onlineClients = Collections.synchronizedSet(new HashSet<String>());
+        this.refreshTime = 10000;
+        this.displayList = displayList;
+    }
+
 
     //Overloaded constructor in case we want to control refresh time
     public onlineClients (PrintWriter clientWriter, int refreshTime) {
@@ -56,11 +67,23 @@ public class onlineClients implements Runnable{
         System.out.println("--------------------------");
     }
 
+    public void refreshOnScreen(){
+        ArrayList<String> onlineList = new ArrayList<String>();
+        onlineClients.forEach((user)->onlineList.add(user));
+        this.displayList.getItems().clear();
+        for (String user : onlineList) {
+            this.displayList.getItems().add(user);
+        }
+    }
+
     @Override
     public void run (){
         while (true) {
-            wait(this.refreshTime);
             this.refreshList();
+            if (this.displayList != null){
+                this.refreshOnScreen();
+            }
+            wait(this.refreshTime);
         }
     }
 }

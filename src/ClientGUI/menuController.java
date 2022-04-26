@@ -1,5 +1,6 @@
 package ClientGUI;
 
+import Client.Activity.onlineClients;
 import Client.ClientBackend;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,10 +16,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.util.ArrayList;
 
 public class menuController {
 
     private ClientBackend clientBackend;
+
+    private String scope;
+    private Thread onlineClients;
 
     @FXML
     private BorderPane menuPane;
@@ -106,9 +112,18 @@ public class menuController {
         //We setup click action on individual people
         onlineList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
+            //If someone changes the person we load the new conversation
             @Override
             public void handle(MouseEvent event) {
                 clientName.setText((String) onlineList.getSelectionModel().getSelectedItem());
+                scope = (String) onlineList.getSelectionModel().getSelectedItem();
+                messageArea.getItems().clear();
+                ArrayList<String> newConversation = clientBackend.history((String) onlineList.getSelectionModel().getSelectedItem());
+                if (newConversation != null){
+                    for (String message : newConversation){
+                     messageArea.getItems().add(message);
+                    }
+                }
             }
         });
     }
@@ -116,6 +131,10 @@ public class menuController {
     //Display login screen to the user
     public void logInScreen (Stage primaryStage){
         try {
+            clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
+            clientBackend.startListening(clientName);
+            clientBackend.startOnlineList(onlineList);
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/loginGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage logInWindow = new Stage();
@@ -125,6 +144,7 @@ public class menuController {
             logInWindow.setX(primaryStage.getX() + 200);
             logInWindow.setY(primaryStage.getY() + 100);
             logInWindow.show();
+            logInWindow.setUserData(clientBackend);
             logInWindow.setOnCloseRequest(event -> {
                 menuPane.setEffect(null);
             });
@@ -137,11 +157,21 @@ public class menuController {
 
     @FXML
     protected void textAdded(){
-        String inputText = messageInput.getText();
-        messageInput.clear();
-
-        messageArea.getItems().add(inputText);
-
+        if (clientBackend.isLoggedIn() == false ){
+            messageInput.clear();
+            messageArea.getItems().add("Not logged in!");
+        }
+        else if (this.scope == null) {
+            String inputText = messageInput.getText();
+            messageInput.clear();
+            messageArea.getItems().add("Select people to message to!");
+        }
+        else {
+            String inputText = messageInput.getText();
+            messageInput.clear();
+            messageArea.getItems().add("You: " + inputText);
+            clientBackend.message(scope, inputText);
+        }
     }
 
 }

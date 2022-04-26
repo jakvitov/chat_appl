@@ -59,4 +59,11 @@ public class Archive {
         System.out.println("--------------------------------------");
     }
 
+    //Return a conversation history with someone as a list
+    public ArrayList<String> getConversationList(String target){
+        if (data.containsKey(target)){
+            return data.get(target);
+        }
+        return null;
+    }
 }
