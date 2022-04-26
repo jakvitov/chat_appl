@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: 222, 220, 220;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="LogOut" />
+          <Menu mnemonicParsing="false" text="Server info" />
+        </menus>
+      </MenuBar>
+   </top>
+   <bottom>
+      <TextField fx:id="message_field" accessibleText="Enter a message" prefHeight="48.0" prefWidth="778.0" promptText="Enter your message" style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-color: grey;" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </TextField>
+   </bottom>
+   <right>
+      <VBox prefHeight="347.0" prefWidth="178.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label prefHeight="16.0" prefWidth="180.0" text="Online clients:">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <ListView fx:id="online_list" prefHeight="495.0" prefWidth="231.0" />
+         </children>
+      </VBox>
+   </right>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="chatting_name" alignment="CENTER_RIGHT" contentDisplay="CENTER" text="CLIENT_NAME" textAlignment="JUSTIFY">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <ListView fx:id="chat_view" prefHeight="495.0" prefWidth="545.0" />
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
