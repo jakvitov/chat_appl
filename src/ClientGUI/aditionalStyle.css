@@ -1,0 +1,8 @@
+.list-cell{
+    -fx-font-size:20.0;
+    -fx-border-radius: 10;
+}
+.list-cell:filled:hover {
+    -fx-background-color: #0093ff;
+    -fx-text-fill: white;
+}

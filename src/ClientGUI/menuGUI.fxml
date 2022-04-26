@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.menuController">
+   <bottom>
+      <TextField fx:id="messageInput" onAction="#textAdded" prefHeight="46.0" prefWidth="800.0" promptText="Enter message" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Roboto" size="24.0" />
+         </font>
+      </TextField>
+   </bottom>
+   <top>
+      <MenuBar fx:id="menuBar" style="-fx-font-size: 20; -fx-font-family: &quot;Roboto&quot;;" BorderPane.alignment="CENTER">
+        <menus>
+            <Menu fx:id="logInMenu" mnemonicParsing="false" text="LogIn">
+              <items>
+                <MenuItem fx:id="logInButton" mnemonicParsing="false" onAction="#logInAction" text="LogIn" />
+              </items>
+            </Menu>
+          <Menu fx:id="logoutButton" mnemonicParsing="false" text="LogOut">
+               <items>
+                  <MenuItem fx:id="logout" mnemonicParsing="false" text="LogOut" />
+                  <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeClient" text="Close client" />
+               </items></Menu>
+          <Menu fx:id="serverInfo" mnemonicParsing="false" text="Server Info">
+               <items>
+                  <MenuItem fx:id="serverInfoButton" mnemonicParsing="false" onAction="#showInfo" text="Server info" />
+               </items></Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+      <VBox prefHeight="392.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="clientName" alignment="CENTER" contentDisplay="CENTER" prefHeight="48.0" prefWidth="594.0" text="Currently offline" textAlignment="CENTER">
+               <font>
+                  <Font name="Roboto" size="20.0" />
+               </font>
+            </Label>
+            <ListView fx:id="messageArea" prefHeight="482.0" prefWidth="594.0" />
+         </children>
+      </VBox>
+   </center>
+   <right>
+      <VBox prefHeight="523.0" prefWidth="206.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="207.0" text="Online Clients:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <ListView fx:id="onlineList" prefHeight="481.0" prefWidth="206.0" />
+         </children>
+      </VBox>
+   </right>
+</BorderPane>
