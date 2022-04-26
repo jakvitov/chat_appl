@@ -62,7 +62,7 @@ public class menuController {
 
     protected void showInfoWindow(Stage primaryStage){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("infoGUI.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/infoGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage infoWindow = new Stage();
             infoWindow.setScene(new Scene(root1));
@@ -110,7 +110,7 @@ public class menuController {
     //Display login screen to the user
     public void logInScreen (Stage primaryStage){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("loginGUI.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/loginGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
             Stage logInWindow = new Stage();
             logInWindow.setScene(new Scene(root1));
