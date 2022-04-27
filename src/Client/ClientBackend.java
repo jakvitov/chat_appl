@@ -6,6 +6,7 @@ import Client.Activity.onlineClients;
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 import Client.History.silentListener;
+import ClientGUI.ChatGUIInterface;
 import DataStructures.logState;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -95,8 +96,13 @@ public class ClientBackend {
     }
 
     public void startOnlineList (ListView displayList){
-        this.onlineClients = new Thread(new onlineClients(this.clientWriter, displayList));
-        onlineClients.start();
+        try {
+            onlineClients  = new Thread(new onlineClients(this.clientWriter, displayList));
+            onlineClients.start();
+            onlineClients.setPriority(9);
+        }
+        catch (Exception e){
+        }
     }
 
 }

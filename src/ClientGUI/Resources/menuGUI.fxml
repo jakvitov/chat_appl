@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+
 <BorderPane fx:id="menuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.menuController">
    <bottom>
       <TextField fx:id="messageInput" onAction="#textAdded" prefHeight="46.0" prefWidth="800.0" promptText="Enter message" BorderPane.alignment="CENTER">
@@ -51,7 +58,7 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <ListView fx:id="onlineList" prefHeight="481.0" prefWidth="206.0" />
+            <ListView fx:id="onlineList" prefHeight="478.0" prefWidth="206.0" />
          </children>
       </VBox>
    </right>
