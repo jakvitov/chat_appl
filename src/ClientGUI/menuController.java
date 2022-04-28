@@ -1,7 +1,8 @@
 package ClientGUI;
 
-import Client.Activity.onlineClients;
 import Client.ClientBackend;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

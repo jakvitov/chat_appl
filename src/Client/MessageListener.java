@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import static Client.Activity.onlineClients.onlineClients;
+import static Client.Activity.onlineClients.activeClients;
 
 /**
  * This class will run in a separate thread listening for the messages from the server
@@ -50,10 +50,10 @@ public class MessageListener implements Runnable {
             }
             //If the text contains token that indicates, that it contains names of online clients
             else if (text.startsWith("\\$~\\")){
-                onlineClients.clear();
+                activeClients.clear();
                 StringTokenizer tokenizer = new StringTokenizer(text,"\\$~\\");
                 while(tokenizer.hasMoreTokens()){
-                    onlineClients.add(tokenizer.nextToken());
+                    activeClients.add(tokenizer.nextToken());
                 }
             }
             //If the message is not valid we continue looping for the next one

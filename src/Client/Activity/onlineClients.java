@@ -20,19 +20,19 @@ import java.util.Set;
  */
 public class onlineClients implements Runnable{
 
-    public static Set<String> onlineClients;
+    public static Set<String> activeClients;
     private PrintWriter clientWriter;
     private int refreshTime;
     private ListView displayList;
 
     public onlineClients (PrintWriter clientWriter) {
             this.clientWriter = clientWriter;
-            this.onlineClients = Collections.synchronizedSet(new HashSet<String>());
+            this.activeClients = Collections.synchronizedSet(new HashSet<String>());
             this.refreshTime = 10000;
     }
     public onlineClients (PrintWriter clientWriter, ListView displayList) {
         this.clientWriter = clientWriter;
-        this.onlineClients = Collections.synchronizedSet(new HashSet<String>());
+        this.activeClients = Collections.synchronizedSet(new HashSet<String>());
         this.refreshTime = 10000;
         this.displayList = displayList;
     }
@@ -41,7 +41,7 @@ public class onlineClients implements Runnable{
     //Overloaded constructor in case we want to control refresh time
     public onlineClients (PrintWriter clientWriter, int refreshTime) {
         this.clientWriter = clientWriter;
-        this.onlineClients = Collections.synchronizedSet(new HashSet<String>());
+        this.activeClients = Collections.synchronizedSet(new HashSet<String>());
         this.refreshTime = refreshTime;
     }
 
@@ -63,13 +63,13 @@ public class onlineClients implements Runnable{
     public void printOnline(){
         System.out.println("--------------------------");
         System.out.println("Online clients:");
-        onlineClients.forEach(System.out::println);
+        activeClients.forEach(System.out::println);
         System.out.println("--------------------------");
     }
 
     public void refreshOnScreen(){
         ArrayList<String> onlineList = new ArrayList<String>();
-        onlineClients.forEach((user)->onlineList.add(user));
+        activeClients.forEach((user)->onlineList.add(user));
         this.displayList.getItems().clear();
         for (String user : onlineList) {
             this.displayList.getItems().add(user);

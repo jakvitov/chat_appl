@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import static Client.Activity.onlineClients.onlineClients;
+import static Client.Activity.onlineClients.activeClients;
 
 /**
  * This class will silently listen to all communication and add new messages to the archive
@@ -67,14 +67,14 @@ public class silentListener implements Runnable {
                 this.promptAlert("Wrong message target!");
             }
             else if (text.equals("\\s446 Client offline \\s")){
-                this.promptAlert("Wrong message target!");
+                this.promptAlert("Wrong message target!");;
             }
             //If the text contains token that indicates, that it contains names of online clients
             else if (text.startsWith("\\$~\\")){
-                onlineClients.clear();
+                activeClients.clear();
                 StringTokenizer tokenizer = new StringTokenizer(text,"\\$~\\");
                 while(tokenizer.hasMoreTokens()){
-                    onlineClients.add(tokenizer.nextToken());
+                    activeClients.add(tokenizer.nextToken());
                 }
             }
             //If the message is not valid we continue looping for the next one
