@@ -8,7 +8,6 @@ package Client;
 import Client.Activity.Logger;
 import Client.Activity.Manual;
 import Client.Activity.Messenger;
-import Client.Activity.onlineClients;
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 
@@ -19,18 +18,20 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+import static Client.MessageListener.activeClients;
+
 public class ClientInterface {
 
     private Socket socket  = null;
     private Logger logger;
     private Messenger messenger;
-    private PrintWriter clientWriter;
-    private BufferedReader clientReader;
     private String clientID;
     private String name;
     private Scanner scan;
     private Archive archive;
     private MessageCrypt crypt;
+    private ObjectOutputStream clientOutput;
+    private ObjectInputStream clientInput;
 
     public static void wait(int time){
         try {
@@ -52,13 +53,12 @@ public class ClientInterface {
         try {
             this.socket = new Socket(InetAddress.getLocalHost().getHostAddress(), 3001);
             System.out.println("Connected!");
-            this.clientWriter = new PrintWriter(this.socket.getOutputStream());
-            this.clientReader =
-                    new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-            this.logger = new Logger(this.clientWriter, this.clientReader);
+            this.clientOutput = new ObjectOutputStream(this.socket.getOutputStream());
+            this.clientInput = new ObjectInputStream(this.socket.getInputStream());
+            this.logger = new Logger(this.clientInput, this.clientOutput);
             this.crypt = new MessageCrypt(name);
             this.archive = new Archive();
-            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.scan, this.archive, this.crypt);
+            this.messenger = new Messenger(this.clientOutput, this.clientInput, this.scan, this.archive, this.crypt);
         }
         catch (UnknownHostException u){
             System.out.println("Unknown host!");
@@ -73,12 +73,12 @@ public class ClientInterface {
             System.exit(1);
         }
     }
-    public BufferedReader getClientReader() {
-        return clientReader;
+    public ObjectInputStream getClientInput() {
+        return this.clientInput;
     }
 
-    public PrintWriter getClientWriter() {
-        return clientWriter;
+    public ObjectOutputStream getClientOutput() {
+        return this.clientOutput;
     }
 
     public void logIn() {
@@ -98,15 +98,11 @@ public class ClientInterface {
         ClientInterface client = new ClientInterface();
         Manual man = new Manual();
 
-        Thread messageListener = new Thread(new MessageListener(client.getClientReader(), client.getArchive(), client.crypt));
-        onlineClients clients = new onlineClients(client.getClientWriter());
-        Thread onlineClients = new Thread(clients);
+        Thread messageListener = new Thread(new MessageListener(client.getClientInput(), client.getArchive(), client.crypt));
         messageListener.setDaemon(false);
-        onlineClients.setDaemon(false);
 
         client.logIn();
         messageListener.start();
-        onlineClients.start();
 
         while (true){
 
@@ -121,7 +117,8 @@ public class ClientInterface {
                 client.message();
             }
             else if (command.equals("online")){
-                clients.printOnline();
+                System.out.println("Online Clients");
+                activeClients.forEach(System.out::println);
             }
             else if (command.equals("help") || command.equals("?")){
                 man.show();

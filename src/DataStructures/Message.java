@@ -3,6 +3,8 @@ package DataStructures;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import static DataStructures.messageType.EMPTY;
+
 /**
  * A class representing one message, that will be sent between clients and server
  * Each messageType guarantess certain values to be not null, all others, that are useless for that are null
@@ -17,6 +19,10 @@ public class Message implements Serializable {
     private String name = null;
     private String source = null;
     private ArrayList<String> serverActiveList = null;
+
+    public Message(){
+        this.type = EMPTY;
+    }
 
     //Constructor for login message
     public Message(messageType type, String name){
@@ -34,6 +40,12 @@ public class Message implements Serializable {
         this.type = type;
         this.target = target;
         this.text = text;
+    }
+
+    //A constructor for the message that contains all online users
+    public Message(messageType type, ArrayList<String> activeList){
+        this.type = type;
+        this.serverActiveList = activeList;
     }
 
     public messageType getType() {

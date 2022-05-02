@@ -13,5 +13,6 @@ public enum messageType {
     LOGGED_IN,
     WRONG_FORMAT,
     MESSAGE_OK,
-    TARGET_NOT_FOUND
+    TARGET_NOT_FOUND,
+    EMPTY
 }

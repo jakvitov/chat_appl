@@ -2,10 +2,10 @@ package Client.Activity;
 
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
+import DataStructures.Message;
+import DataStructures.messageType;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -14,49 +14,55 @@ import java.util.Scanner;
  */
 public class Messenger {
 
-    private PrintWriter clientWriter;
-    private BufferedReader clientReader;
+    private ObjectOutputStream clientOutput;
+    private ObjectInputStream clientIntput;
     private Scanner scanner;
     private Archive archive;
     private MessageCrypt crypt;
 
-    public Messenger (PrintWriter clientWriter, BufferedReader clientReader, Scanner scanner, Archive archive
+    public Messenger (ObjectOutputStream clientOutput, ObjectInputStream clientInput, Scanner scanner, Archive archive
     ,MessageCrypt crypt){
-            this.clientWriter = clientWriter;
-            this.clientReader = clientReader;
+            this.clientIntput = clientInput;
+            this.clientOutput = clientOutput;
             this.scanner = scanner;
             this.archive = archive;
             this.crypt = crypt;
     }
 
-    public Messenger (PrintWriter clientWriter, BufferedReader clientReader, Archive archive
+    public Messenger (ObjectOutputStream clientOutput, ObjectInputStream clientInput, Archive archive
             ,MessageCrypt crypt){
-        this.clientWriter = clientWriter;
-        this.clientReader = clientReader;
+        this.clientIntput = clientInput;
+        this.clientOutput = clientOutput;
         this.archive = archive;
         this.crypt = crypt;
     }
 
+    //A method used to send a simple text message to client later used in run method
+    public void sendTextMessage(ObjectOutputStream ooe, String target, String text){
+        try {
+            ooe.writeObject(new Message(messageType.TEXT, target , text));
+        }
+        catch (IOException IOE){
+            System.out.println("Error while sending the text - message");
+        }
+    }
+
     public void sendMessage(){
-        String token = "\\§\\{}\\";
         System.out.println("Insert username of who you want to message: ");
         String target = scanner.nextLine();
         String targetID = Integer.toString(target.hashCode());
         System.out.println("Enter your message: ");
         String message = this.scanner.nextLine();
         String finalMessage = crypt.encryptMessage(target,message);
-        this.clientWriter.println(targetID + token + finalMessage + token);
-        this.clientWriter.flush();
+        this.sendTextMessage(this.clientOutput, targetID, finalMessage);
         this.archive.addOutMessage(target, message);
     }
 
     public void message(String target, String message){
-        String token = "\\§\\{}\\";
         String targetID = Integer.toString(target.hashCode());
         System.out.println("Enter your message: ");
         String finalMessage = crypt.encryptMessage(target,message);
-        this.clientWriter.println(targetID + token + finalMessage + token);
-        this.clientWriter.flush();
+        this.sendTextMessage(this.clientOutput, targetID, finalMessage);
         this.archive.addOutMessage(target, message);
     }
 }

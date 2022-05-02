@@ -2,12 +2,16 @@ package Client;
 
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
+import DataStructures.Message;
+import DataStructures.messageType;
+import javafx.beans.binding.StringExpression;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.Set;
 import java.util.StringTokenizer;
 
-import static Client.Activity.onlineClients.activeClients;
 
 /**
  * This class will run in a separate thread listening for the messages from the server
@@ -15,12 +19,13 @@ import static Client.Activity.onlineClients.activeClients;
  */
 public class MessageListener implements Runnable {
 
-    private BufferedReader clientReader;
+    private ObjectInputStream clientInput;
     private Archive archive;
     private MessageCrypt crypt;
+    public static Set<String> activeClients;
 
-    MessageListener(BufferedReader inputReader, Archive archive, MessageCrypt crypt){
-        this.clientReader = inputReader;
+    MessageListener(ObjectInputStream clientInput, Archive archive, MessageCrypt crypt){
+        this.clientInput = clientInput;
         this.archive = archive;
         this.crypt = crypt;
     }
@@ -28,47 +33,38 @@ public class MessageListener implements Runnable {
     @Override
     public void run () {
         while (true){
-            String text = "empty";
+            Message message = new Message();
             try {
-                text = clientReader.readLine();
+                message = (Message) this.clientInput.readObject();
+            }
+            catch (ClassNotFoundException CNFE){
+                System.out.println("Error while reading the message from the socket!");
+                CNFE.printStackTrace();
             }
             catch (IOException IOE){
-                System.out.println("Error while reading from the socket!");
+                System.out.println("Error while reading the message from the socket!");
                 IOE.printStackTrace();
             }
-            if (text == null){
+            if (message == null || message.getType().equals(messageType.EMPTY)){
                 continue;
             }
-            else if (text.equals("\\s500 Message OK\\s")){
+            else if (message.getType().equals(messageType.MESSAGE_OK)){
                 System.out.println("Message was delivered all right!");
             }
-            else if (text.equals("\\s445 Wrong target ID\\s")){
-                System.out.println("Targeted user does not exist!");
-            }
-            else if (text.equals("\\s446 Client offline \\s")){
-                System.out.println("Requested client is currently offline!");
+            else if (message.getType().equals(messageType.WRONG_FORMAT)){
+                System.out.println("Targeted user does not currently online on the server!");
             }
             //If the text contains token that indicates, that it contains names of online clients
-            else if (text.startsWith("\\$~\\")){
+            else if (message.getType().equals(messageType.ACTIVE)){
                 activeClients.clear();
-                StringTokenizer tokenizer = new StringTokenizer(text,"\\$~\\");
-                while(tokenizer.hasMoreTokens()){
-                    activeClients.add(tokenizer.nextToken());
-                }
+                message.getServerActiveList().forEach((user)->activeClients.add(user));
             }
-            //If the message is not valid we continue looping for the next one
-            else if (!text.startsWith("\\§~\\") || !text.endsWith("\\§~\\")){
-                continue;
-            }
-            else {
-                StringTokenizer tokenizer = new StringTokenizer(text, "\\§~\\");
-                String message = tokenizer.nextToken();
-                String from = tokenizer.nextToken();
+            else if (message.getType().equals(messageType.TEXT)){
                 System.out.println("-------------------------------------------------");
-                System.out.println("Incomming message from: " + from);
+                System.out.println("Incomming message from: " + message.getTarget());
                 System.out.println("-------------------------------------------------");
-                String finalMessage = crypt.decryptMessage(message);
-                this.archive.addInMessage(from, finalMessage);
+                String finalMessage = crypt.decryptMessage(message.getText());
+                this.archive.addInMessage(message.getSource(), finalMessage);
             }
         }
     }

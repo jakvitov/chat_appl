@@ -2,7 +2,6 @@ package Client;
 
 import Client.Activity.Logger;
 import Client.Activity.Messenger;
-import Client.Activity.onlineClients;
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 import Client.History.silentListener;
@@ -11,10 +10,7 @@ import DataStructures.logState;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -30,8 +26,8 @@ public class ClientBackend {
     private String serverIP;
     private Socket clientSocket;
     private Logger logger;
-    private PrintWriter clientWriter;
-    private BufferedReader clientReader;
+    private ObjectInputStream clientInput;
+    private ObjectOutputStream clientOutput;
     private Archive archive;
     private MessageCrypt crypt;
     private Messenger messenger;
@@ -52,10 +48,10 @@ public class ClientBackend {
         this.archive = new Archive();
         try{
             this.clientSocket = new Socket(IP, 3001);
-            this.clientWriter = new PrintWriter(this.clientSocket.getOutputStream());
-            this.clientReader = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+            this.clientOutput = new ObjectOutputStream(this.clientSocket.getOutputStream());
+            this.clientInput = new ObjectInputStream(this.clientSocket.getInputStream());
             this.crypt = new MessageCrypt(clientName);
-            this.messenger = new Messenger(this.clientWriter, this.clientReader, this.archive, this.crypt);
+            this.messenger = new Messenger(this.clientOutput, this.clientInput, this.archive, this.crypt);
 
         }
         catch (UnknownHostException UHE){
@@ -65,7 +61,7 @@ public class ClientBackend {
             return logState.OFFLINE;
         }
 
-        this.logger = new Logger(this.clientWriter, this.clientReader);
+        this.logger = new Logger(this.clientInput, this.clientOutput);
         if (logger.logIn(clientName) == false){
             return logState.NAMETAKEN;
         }
@@ -81,12 +77,6 @@ public class ClientBackend {
         this.logger.logOut();
     }
 
-    //Start listening to incomming messages
-    public void startListening (Label alertLabel){
-        Thread listener = new Thread(new silentListener(this.clientReader, this.archive, this.crypt, alertLabel));
-        listener.start();
-    }
-
     public void message(String targetName, String message){
         this.messenger.message(targetName, message);
     }
@@ -95,14 +85,5 @@ public class ClientBackend {
         return this.archive.getConversationList(target);
     }
 
-    public void startOnlineList (ListView displayList){
-        try {
-            onlineClients  = new Thread(new onlineClients(this.clientWriter, displayList));
-            onlineClients.start();
-            onlineClients.setPriority(9);
-        }
-        catch (Exception e){
-        }
-    }
 
 }
