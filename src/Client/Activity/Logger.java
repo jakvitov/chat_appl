@@ -1,10 +1,10 @@
 package Client.Activity;
 
 import Client.ClientInterface;
+import DataStructures.Message;
+import DataStructures.messageType;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -15,38 +15,47 @@ import java.util.Scanner;
 
 public class Logger {
 
-    private PrintWriter clientWriter;
-    private BufferedReader clientReader;
+    private ObjectOutputStream clientOutput;
+    private ObjectInputStream clientInput;
 
-    public Logger(PrintWriter clientWriter, BufferedReader clientReader){
-            this.clientReader = clientReader;
-            this.clientWriter = clientWriter;
+    public Logger(ObjectInputStream clientInput, ObjectOutputStream clientOutput){
+            this.clientInput = clientInput;
+            this.clientOutput = clientOutput;
     }
 
     //Given a string of user name, calculate his id and log him in on the server
     //Return true on sucess, false on error
     public boolean logIn(String name){
-        String token = "\\ß\\§\\";
-
         String clientID = Integer.toString(name.hashCode());
 
-        this.clientWriter.println(token + clientID + token + name + token);
-        this.clientWriter.flush();
         try {
-            String response = this.clientReader.readLine();
-            if (response.equals("\\s1 LOGGED IN \\s")){
+
+            this.clientOutput.writeObject(new Message(messageType.LOGIN, name));
+
+            Message response = (Message) this.clientInput.readObject();
+
+            if (response.getType().equals(messageType.LOGGED_IN)){
                 System.out.println("Sucesfully logged in!");
                 return true;
             }
-            else if (response.equals("\\s444 Wrong client ID\\s")){
+            else if (response.getType().equals(messageType.NAME_TAKEN)){
                 System.out.println("Name is already taken!");
+                return false;
+            }
+            else if (response.getType().equals(messageType.WRONG_FORMAT)){
+                System.out.println("Wrong message type!");
                 return false;
             }
             else {
                 System.out.println("Login failed " + response);
                 return false;
             }
-        } catch (IOException IOE) {
+        }
+        catch (ClassNotFoundException CNFE){
+            System.out.println("Class not found!");
+            return false;
+        }
+        catch (IOException IOE) {
             System.out.println("Error while reading the server response");
             return false;
         }
@@ -54,8 +63,12 @@ public class Logger {
 
     public void logOut(){
         System.out.println("Logging out...");
-        this.clientWriter.print("\\c\\l 101 LOGOUT \\c\\l");
-        this.clientWriter.flush();
+        try {
+            this.clientOutput.writeObject(new Message(messageType.LOGOUT));
+        }
+        catch (IOException IOE){
+            System.out.println("Error while logging out!");
+        }
     }
 }
 
