@@ -57,6 +57,7 @@ public class ClientHandler implements Runnable {
     public void sendTextMessage(ObjectOutputStream ooe, String target, String text){
         try {
             ooe.writeObject(new Message(messageType.TEXT, target , text));
+            ooe.flush();
         }
         catch (IOException IOE){
             System.out.println("Error while sending the text - message");
@@ -67,6 +68,7 @@ public class ClientHandler implements Runnable {
     public void sendTypeMessage(ObjectOutputStream ooe, messageType type){
         try {
             ooe.writeObject(new Message(type));
+            ooe.flush();
         }
         catch (IOException IOE){
             System.out.println("Error while sending the type - message");
@@ -85,7 +87,7 @@ public class ClientHandler implements Runnable {
                 System.out.println("Input is null");
                 return false;
             }
-            if (!login.equals(messageType.LOGIN) || login.getName().isEmpty()){
+            if (!login.getType().equals(messageType.LOGIN) || login.getName().isEmpty()){
                 System.out.println("Wrong client input name format!");
                 return false;
             }
@@ -97,12 +99,14 @@ public class ClientHandler implements Runnable {
                 if (cl.client != null && cl.client.ID.equals(resultID)){
                     System.out.println("Name is already taken!");
                     this.clientOutput.writeObject(new Message(messageType.NAME_TAKEN));
+                    this.clientOutput.flush();
                     return false;
                 }
             }
 
             this.client = new Client(resultID, name);
             this.clientOutput.writeObject(new Message(messageType.LOGGED_IN));
+            this.clientOutput.flush();
             return true;
         }
         catch (ClassNotFoundException CFNE){
@@ -123,7 +127,6 @@ public class ClientHandler implements Runnable {
     //Get a message from a client and its target
     //The return pair represents client ID and message as a string
     public Pair<Integer, String> getMessage(){
-        Integer intID = new Integer(-1111);
         Message message;
         try {
             message = (Message) this.clientInput.readObject();
@@ -144,7 +147,7 @@ public class ClientHandler implements Runnable {
         if (message.getType().equals(messageType.LOGOUT)){
             throw new logOutException();
         }
-        return new Pair(message.getTarget(), message.getText());
+        return new Pair(Integer.parseInt(message.getTarget()), message.getText());
     }
     @Override
     public void run() {
@@ -158,6 +161,7 @@ public class ClientHandler implements Runnable {
         catch (IllegalArgumentException IAE){
             try {
                 this.clientOutput.writeObject(new Message(messageType.WRONG_FORMAT));
+                this.clientOutput.flush();
                 this.clientSocket.close();
             }
             catch (IOException IOE){
@@ -168,9 +172,10 @@ public class ClientHandler implements Runnable {
         //Now we read and send messages in an infinite loop
         while (true){
             Pair<Integer, String> message;
-          try {
-            message = this.getMessage();
-          }
+            try {
+                System.out.println("Handler started listening for " + this.client.nick);
+                message = this.getMessage();
+            }
           catch (logOutException LOE){
               System.out.println("Logging out user: " + this.client.ID);
               ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
@@ -180,6 +185,7 @@ public class ClientHandler implements Runnable {
               System.out.println("Wrong input message format!");
               try {
                   this.clientOutput.writeObject(new Message(messageType.WRONG_FORMAT));
+                  this.clientOutput.flush();
               }
               catch (IOException IOE){
                   System.out.println("Error while writing error message to the client!");
@@ -195,7 +201,7 @@ public class ClientHandler implements Runnable {
           boolean found = false;
             for (ClientHandler cl : ServerInterface.database){
               if (cl.client.ID.equals(message.getFirst())){
-                  this.sendTextMessage(cl.clientOutput, message.getSecond(), this.client.nick);
+                  this.sendTextMessage(cl.clientOutput, this.client.nick, message.getSecond());
                   //We confirm that we delivered the message to the client
                   this.sendTypeMessage(this.clientOutput, MESSAGE_OK);
                   found = true;

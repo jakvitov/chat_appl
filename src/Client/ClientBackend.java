@@ -4,14 +4,9 @@ import Client.Activity.Logger;
 import Client.Activity.Messenger;
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
-import Client.History.silentListener;
-import ClientGUI.ChatGUIInterface;
 import DataStructures.logState;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;

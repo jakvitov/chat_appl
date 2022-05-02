@@ -64,7 +64,7 @@ public class MessageListener implements Runnable {
                 System.out.println("Incomming message from: " + message.getTarget());
                 System.out.println("-------------------------------------------------");
                 String finalMessage = crypt.decryptMessage(message.getText());
-                this.archive.addInMessage(message.getSource(), finalMessage);
+                this.archive.addInMessage(message.getTarget(), finalMessage);
             }
         }
     }

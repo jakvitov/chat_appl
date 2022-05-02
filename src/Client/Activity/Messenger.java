@@ -29,6 +29,7 @@ public class Messenger {
             this.crypt = crypt;
     }
 
+    //A constructor for the class without input scanner - we do not take user input, just send over the messages
     public Messenger (ObjectOutputStream clientOutput, ObjectInputStream clientInput, Archive archive
             ,MessageCrypt crypt){
         this.clientIntput = clientInput;
@@ -40,7 +41,9 @@ public class Messenger {
     //A method used to send a simple text message to client later used in run method
     public void sendTextMessage(ObjectOutputStream ooe, String target, String text){
         try {
-            ooe.writeObject(new Message(messageType.TEXT, target , text));
+            Message message = new Message(messageType.TEXT, target , text);
+            ooe.writeObject(message);
+            ooe.flush();
         }
         catch (IOException IOE){
             System.out.println("Error while sending the text - message");

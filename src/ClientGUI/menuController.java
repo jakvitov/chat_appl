@@ -133,8 +133,6 @@ public class menuController {
     public void logInScreen (Stage primaryStage){
         try {
             clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
-            clientBackend.startListening(clientName);
-            clientBackend.startOnlineList(onlineList);
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/loginGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
