@@ -8,5 +8,10 @@ public enum messageType {
     TEXT,
     LOGIN,
     LOGOUT,
-    ACTIVE
+    ACTIVE,
+    NAME_TAKEN,
+    LOGGED_IN,
+    WRONG_FORMAT,
+    MESSAGE_OK,
+    TARGET_NOT_FOUND
 }
