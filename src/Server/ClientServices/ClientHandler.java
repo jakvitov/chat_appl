@@ -207,8 +207,12 @@ public class ClientHandler implements Runnable {
                   this.clientOutput.writeObject(new Message(messageType.WRONG_FORMAT));
                   this.clientOutput.flush();
               }
+              //Client shut down the application
               catch (IOException IOE){
-                  System.out.println("Error while writing error message to the client!");
+                  System.out.println("Client disconnected - loggin out user: " + this.client.ID);
+                  ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
+                  this.activeNotify();
+                  break;
               }
               continue;
           }
