@@ -151,6 +151,7 @@ public class menuController {
             logInWindow.setOnCloseRequest(event -> {
                 menuPane.setEffect(null);
                 observableClients.addListener(this::reloadActiveList);
+                this.clientName.setText("");
             });
         }
         catch (IOException IOE){

@@ -25,16 +25,21 @@ public class logInController {
 
     @FXML
     protected void usernameEntered (){
-        System.out.println("Username: " + usernameInput.getText());
+        //System.out.println("Username: " + usernameInput.getText());
     }
 
     @FXML
     protected void serverIPInput (){
-        System.out.println("Server IP: " + serverInput.getText());
+        //System.out.println("Server IP: " + serverInput.getText());
     }
 
     @FXML
     protected void loginPress(){
+
+        if (clientBackend.isLoggedIn()){
+            return;
+        }
+
         logState loginState = logState.OFFLINE;
 
         while (!loginState.equals(logState.CONNECTED)){
