@@ -26,7 +26,7 @@
                 <MenuItem fx:id="logInButton" mnemonicParsing="false" onAction="#logInAction" text="LogIn" />
               </items>
             </Menu>
-          <Menu fx:id="logoutButton" mnemonicParsing="false" text="LogOut">
+          <Menu fx:id="logoutButton" mnemonicParsing="false" onAction="#logOutAction" text="LogOut">
                <items>
                   <MenuItem fx:id="logout" mnemonicParsing="false" text="LogOut" />
                   <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeClient" text="Close client" />

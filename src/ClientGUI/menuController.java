@@ -71,6 +71,20 @@ public class menuController {
         showInfoWindow((Stage)clientName.getScene().getWindow());
     }
 
+    @FXML
+    protected void logOutAction(){
+        if (this.clientBackend.isLoggedIn() == false){
+            return;
+        }
+        this.clientBackend.logOut();
+        Platform.runLater(new Runnable() {
+            public void run() {
+                onlineList.getItems().clear();
+                messageArea.getItems().clear();
+            }
+        });
+    }
+
     protected void showInfoWindow(Stage primaryStage){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/infoGUI.fxml"));
