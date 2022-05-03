@@ -17,14 +17,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.util.ArrayList;
 
 import static Client.MessageListener.observableClients;
 
 public class menuController {
 
-    private ClientBackend clientBackend;
+    public static ClientBackend clientBackend;
 
     private String scope;
     private Thread onlineClients;
@@ -129,10 +128,15 @@ public class menuController {
 
     //Display login screen to the user
     public void logInScreen (Stage primaryStage){
+        if (this.clientBackend.isLoggedIn()){
+            this.Alert("You are already logged in. If you want to change server, log out first!");
+            menuPane.setEffect(null);
+            return;
+        }
+
         try {
-            clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
+            //clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
             //Now we start listening to changes in the online list
-            observableClients.addListener(this::reloadActiveList);
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/loginGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
@@ -146,6 +150,7 @@ public class menuController {
             logInWindow.setUserData(clientBackend);
             logInWindow.setOnCloseRequest(event -> {
                 menuPane.setEffect(null);
+                observableClients.addListener(this::reloadActiveList);
             });
         }
         catch (IOException IOE){
@@ -188,5 +193,15 @@ public class menuController {
                 }
             });
         }
+    }
+
+    //Firea a basic alert with the given text
+    public void Alert(String text){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Error");
+        alert.setHeaderText("An error occured:");
+        alert.setContentText(text);
+
+        alert.showAndWait();
     }
 }
