@@ -34,31 +34,32 @@ public class logInController {
     }
 
     @FXML
-    protected void loginPress(){
+    protected void loginPress() {
 
-        if (clientBackend.isLoggedIn()){
+        if (clientBackend.isLoggedIn()) {
             return;
         }
 
         logState loginState = logState.OFFLINE;
 
-        while (!loginState.equals(logState.CONNECTED)){
-            String username = usernameInput.getText();
-            String ipAdress = serverInput.getText();
-            loginState = clientBackend.logIn(ipAdress, username);
+        String username = usernameInput.getText();
+        String ipAdress = serverInput.getText();
+        loginState = clientBackend.logIn(ipAdress, username);
 
-            if (loginState.equals(logState.NAMETAKEN)){
-                logInError.setVisible(true);
-                logInError.setText("Name is already taken!");
-            }
-
-            else if (loginState.equals(logState.OFFLINE)){
-                logInError.setVisible(true);
-                logInError.setText("Given server is offline!");
-            }
+        if (loginState.equals(logState.NAMETAKEN)) {
+            logInError.setVisible(true);
+            logInError.setText("Name is already taken!");
+            return;
+        }
+        else if (loginState.equals(logState.OFFLINE)) {
+            logInError.setVisible(true);
+            logInError.setText("Given server is offline!");
+            return;
         }
         logInError.setVisible(true);
         logInError.setText("Sucessfully logged in!");
+        usernameInput.clear();
+        serverInput.clear();
     }
 
     public void initialize(){
