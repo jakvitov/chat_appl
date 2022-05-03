@@ -63,7 +63,6 @@ public class Messenger {
 
     public void message(String target, String message){
         String targetID = Integer.toString(target.hashCode());
-        System.out.println("Enter your message: ");
         String finalMessage = crypt.encryptMessage(target,message);
         this.sendTextMessage(this.clientOutput, targetID, finalMessage);
         this.archive.addOutMessage(target, message);

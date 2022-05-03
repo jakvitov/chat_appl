@@ -1,8 +1,8 @@
 package ClientGUI;
 
 import Client.ClientBackend;
-import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.util.ArrayList;
+
+import static Client.MessageListener.observableClients;
 
 public class menuController {
 
@@ -106,10 +108,6 @@ public class menuController {
     public void initialize(){
 
         clientBackend = new ClientBackend();
-
-        onlineList.getItems().add("\uD83D\uDFE2" + " Petr");
-        onlineList.getItems().add("\uD83D\uDFE2" + " Pavel");
-        onlineList.getItems().add("\uD83D\uDFE2" + " Ondřej");
         //We setup click action on individual people
         onlineList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -133,6 +131,8 @@ public class menuController {
     public void logInScreen (Stage primaryStage){
         try {
             clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
+            //Now we start listening to changes in the online list
+            observableClients.addListener(this::reloadActiveList);
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/loginGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
@@ -173,4 +173,20 @@ public class menuController {
         }
     }
 
+    @FXML
+    public void reloadActiveList(
+        ListChangeListener.Change<? extends String> change) {
+        Platform.runLater(new Runnable() {
+            public void run() {
+                onlineList.getItems().clear();
+            }
+        });
+        for (String user : observableClients) {
+            Platform.runLater(new Runnable() {
+                public void run() {
+                    onlineList.getItems().add(user);
+                }
+            });
+        }
+    }
 }

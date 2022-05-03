@@ -27,6 +27,8 @@ public class ClientBackend {
     private MessageCrypt crypt;
     private Messenger messenger;
     private Thread onlineClients;
+    private MessageListener listener;
+    private Thread threadListener;
 
     public ClientBackend(){
         this.loggedIn = false;
@@ -47,7 +49,8 @@ public class ClientBackend {
             this.clientInput = new ObjectInputStream(this.clientSocket.getInputStream());
             this.crypt = new MessageCrypt(clientName);
             this.messenger = new Messenger(this.clientOutput, this.clientInput, this.archive, this.crypt);
-
+            this.listener = new MessageListener(this.clientInput, this.archive, this.crypt, true);
+            this.threadListener = new Thread(this.listener);
         }
         catch (UnknownHostException UHE){
             return logState.OFFLINE;
@@ -62,7 +65,9 @@ public class ClientBackend {
         }
 
         this.loggedIn = true;
+        this.threadListener.start();
         return logState.CONNECTED;
+
     }
 
     //Log us out
