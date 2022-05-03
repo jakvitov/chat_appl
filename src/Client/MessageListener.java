@@ -9,6 +9,7 @@ import javafx.beans.binding.StringExpression;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -25,6 +26,7 @@ public class MessageListener implements Runnable {
     public static Set<String> activeClients;
 
     MessageListener(ObjectInputStream clientInput, Archive archive, MessageCrypt crypt){
+        activeClients = new HashSet<String>();
         this.clientInput = clientInput;
         this.archive = archive;
         this.crypt = crypt;

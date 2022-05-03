@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import static DataStructures.messageType.MESSAGE_OK;
-import static DataStructures.messageType.TARGET_NOT_FOUND;
+import static DataStructures.messageType.*;
 import static Server.ServerInterface.database;
 
 //A class to be called to handle a client in a single thread
@@ -64,6 +64,24 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    //A method used to send an ACTIVE client message containing all the online clients in array list
+    public void sendActiveMessage (ArrayList<String> list){
+        try {
+            this.clientOutput.writeObject(new Message(ACTIVE, list));
+        }
+        catch (IOException IOE){
+            System.out.println("Error while sending the active clients message!");
+        }
+    }
+
+    //A method to notify all online clients about server active clients change
+    //We run this method every time someone logs in or out to notify everyone
+    public void activeNotify(){
+        ArrayList<String> onlineName = new ArrayList<String>();
+        database.forEach((clientHandler) -> onlineName.add(clientHandler.client.nick));
+        database.forEach((clientHandler) -> clientHandler.sendActiveMessage(onlineName));
+    }
+
     //A method used to send a simple only-type message to the client
     public void sendTypeMessage(ObjectOutputStream ooe, messageType type){
         try {
@@ -107,6 +125,7 @@ public class ClientHandler implements Runnable {
             this.client = new Client(resultID, name);
             this.clientOutput.writeObject(new Message(messageType.LOGGED_IN));
             this.clientOutput.flush();
+            this.activeNotify();
             return true;
         }
         catch (ClassNotFoundException CFNE){
@@ -179,6 +198,7 @@ public class ClientHandler implements Runnable {
           catch (logOutException LOE){
               System.out.println("Logging out user: " + this.client.ID);
               ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
+              this.activeNotify();
               break;
           }
           catch (IllegalArgumentException IAE){
@@ -195,6 +215,7 @@ public class ClientHandler implements Runnable {
           catch (IllegalStateException ISE){
               System.out.println("Null message - loggin out user:" + this.client.ID);
               ServerInterface.database.removeIf((user)->user.getClient().ID.equals(this.client.ID));
+              this.activeNotify();
               break;
           }
           //If the message is all right we search for output port in the current online database and send there the message
