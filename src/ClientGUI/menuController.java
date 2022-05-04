@@ -2,6 +2,7 @@ package ClientGUI;
 
 import Client.ClientBackend;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -122,6 +123,7 @@ public class menuController {
     public void initialize(){
 
         clientBackend = new ClientBackend();
+        observableClients = FXCollections.observableArrayList();
         //We setup click action on individual people
         onlineList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -152,6 +154,7 @@ public class menuController {
         try {
             //clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
             //Now we start listening to changes in the online list
+            observableClients.addListener(this::reloadActiveList);
 
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/loginGUI.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
@@ -169,7 +172,6 @@ public class menuController {
                 if (this.clientBackend.isLoggedIn() == false){
                     return;
                 }
-                observableClients.addListener(this::reloadActiveList);
                 this.clientName.setText("");
             });
         }

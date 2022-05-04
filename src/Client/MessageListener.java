@@ -40,7 +40,6 @@ public class MessageListener implements Runnable {
 
     MessageListener(ObjectInputStream clientInput, Archive archive, MessageCrypt crypt, boolean silent){
         activeClients = new HashSet<String>();
-        observableClients = FXCollections.observableArrayList();
         this.clientInput = clientInput;
         this.archive = archive;
         this.crypt = crypt;
