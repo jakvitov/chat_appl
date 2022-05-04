@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
+import static Client.MessageListener.observableClients;
+
 /**
  * This is a class which is responsible to log client in and log him out
  * This class is mostly used by the ClientInterface to do its job

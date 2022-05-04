@@ -165,6 +165,10 @@ public class menuController {
             logInWindow.setUserData(clientBackend);
             logInWindow.setOnCloseRequest(event -> {
                 menuPane.setEffect(null);
+                //In case the client just shut down the loggin window without successful login we just return
+                if (this.clientBackend.isLoggedIn() == false){
+                    return;
+                }
                 observableClients.addListener(this::reloadActiveList);
                 this.clientName.setText("");
             });
