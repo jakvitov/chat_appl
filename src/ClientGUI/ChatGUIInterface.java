@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class ChatGUIInterface extends Application {
         scene.getStylesheets().add(css);
         stage.setResizable(false);
         stage.setTitle("Message!");
+        stage.getIcons().add(new Image("file:src/ClientGUI/Resources/icon.png"));
         stage.setScene(scene);
         Platform.setImplicitExit(false);
         stage.show();

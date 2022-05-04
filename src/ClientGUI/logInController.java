@@ -46,6 +46,13 @@ public class logInController {
 
         String username = usernameInput.getText();
         String ipAdress = serverInput.getText();
+
+        if (username.isEmpty() || ipAdress.isEmpty()){
+            logInError.setVisible(true);
+            logInError.setText("Username or server IP is empty!");
+            return;
+        }
+
         loginState = clientBackend.logIn(ipAdress, username);
 
         if (loginState.equals(logState.NAMETAKEN)) {
