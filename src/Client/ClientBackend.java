@@ -6,7 +6,10 @@ import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 import DataStructures.logState;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -44,7 +47,8 @@ public class ClientBackend {
     public logState logIn (String IP, String clientName){
         this.archive = new Archive();
         try{
-            this.clientSocket = new Socket(IP, 3001);
+            this.clientSocket = new Socket();
+            this.clientSocket.connect(new InetSocketAddress(IP, 3001), 1000);
             this.clientOutput = new ObjectOutputStream(this.clientSocket.getOutputStream());
             this.clientInput = new ObjectInputStream(this.clientSocket.getInputStream());
             this.crypt = new MessageCrypt(clientName);

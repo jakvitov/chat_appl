@@ -34,12 +34,12 @@
             <Font size="20.0" />
          </font>
       </TextField>
-      <BorderPane prefHeight="95.0" prefWidth="400.0">
+      <BorderPane prefHeight="99.0" prefWidth="400.0">
          <center>
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginPress" prefHeight="43.0" prefWidth="102.0" text="Log In!" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#loginPress" prefHeight="52.0" prefWidth="102.0" text="Log In!" textAlignment="CENTER" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
-      <Label fx:id="logInError" alignment="CENTER" contentDisplay="CENTER" prefHeight="97.0" prefWidth="400.0" text="Error_message" textAlignment="CENTER" textFill="#a10000">
+      <Label fx:id="logInError" alignment="CENTER" contentDisplay="CENTER" prefHeight="56.0" prefWidth="400.0" text="Error_message" textAlignment="CENTER" textFill="#a10000">
          <font>
             <Font size="20.0" />
          </font>
