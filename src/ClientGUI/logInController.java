@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import static ClientGUI.menuController.clientBackend;
+import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.CHARTREUSE;
 
 public class logInController {
@@ -66,7 +67,7 @@ public class logInController {
             return;
         }
         logInError.setVisible(true);
-        logInError.setTextFill(CHARTREUSE);
+        logInError.setTextFill(BLACK);
         logInError.setText("Sucessfully logged in!");
         usernameInput.clear();
         serverInput.clear();
