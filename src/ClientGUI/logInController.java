@@ -5,9 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import static ClientGUI.menuController.clientBackend;
+import static javafx.scene.paint.Color.CHARTREUSE;
 
 public class logInController {
 
@@ -57,6 +59,7 @@ public class logInController {
             return;
         }
         logInError.setVisible(true);
+        logInError.setTextFill(CHARTREUSE);
         logInError.setText("Sucessfully logged in!");
         usernameInput.clear();
         serverInput.clear();

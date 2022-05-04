@@ -76,6 +76,7 @@ public class menuController {
         if (this.clientBackend.isLoggedIn() == false){
             return;
         }
+        this.clientName.setText("");
         this.clientBackend.logOut();
         Platform.runLater(new Runnable() {
             public void run() {
