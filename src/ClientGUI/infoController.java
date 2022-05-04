@@ -6,6 +6,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import static ClientGUI.menuController.clientBackend;
+
 public class infoController {
 
     @FXML
@@ -17,6 +19,10 @@ public class infoController {
 
     @FXML
     private VBox infoWindow;
+
+    public void initialize(){
+        serverInfoLabel.setText(clientBackend.getInfo());
+    }
 
     @FXML
     protected void windowClose(){

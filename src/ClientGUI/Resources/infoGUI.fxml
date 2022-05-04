@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+
 <VBox fx:id="infoWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.infoController">
    <children>
       <Label alignment="CENTER" prefHeight="107.0" prefWidth="600.0" text="Info:">
@@ -12,7 +13,7 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <Label fx:id="serverInfoLabel" alignment="CENTER" prefHeight="173.0" prefWidth="680.0" text="ServerInfo">
+      <Label fx:id="serverInfoLabel" alignment="CENTER" prefHeight="173.0" prefWidth="680.0" text="ServerInfo" textAlignment="CENTER">
          <font>
             <Font size="20.0" />
          </font>

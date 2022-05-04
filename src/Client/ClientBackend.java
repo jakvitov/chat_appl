@@ -4,6 +4,7 @@ import Client.Activity.Logger;
 import Client.Activity.Messenger;
 import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
+import Client.History.connectedData;
 import DataStructures.logState;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class ClientBackend {
     private Thread onlineClients;
     private MessageListener listener;
     private Thread threadListener;
+    private connectedData currentInfo;
 
     public ClientBackend(){
         this.loggedIn = false;
@@ -69,6 +71,7 @@ public class ClientBackend {
         }
 
         this.loggedIn = true;
+        this.currentInfo = new connectedData(clientName, IP);
         this.threadListener.start();
         return logState.CONNECTED;
 
@@ -78,6 +81,7 @@ public class ClientBackend {
     public void logOut (){
         this.archive = new Archive();
         this.loggedIn = false;
+        System.out.println("setting null");
         this.logger.logOut();
     }
 
@@ -89,5 +93,13 @@ public class ClientBackend {
         return this.archive.getConversationList(target);
     }
 
+    //Return text including info about the current name and IP of the connected server, this string
+    //is passed into the server info label
+    public String getInfo(){
+        if (this.loggedIn == false){
+            return new String("You are currently not\nconnected to any server!");
+        }
+        else return new String("Server IP: " + this.currentInfo.serverIP + "\nUsername: " + this.currentInfo.name);
+    }
 
 }
