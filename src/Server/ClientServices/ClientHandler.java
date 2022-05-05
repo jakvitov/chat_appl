@@ -192,7 +192,6 @@ public class ClientHandler implements Runnable {
         while (true){
             Pair<Integer, String> message;
             try {
-                System.out.println("Handler started listening for " + this.client.nick);
                 message = this.getMessage();
             }
           catch (logOutException LOE){
