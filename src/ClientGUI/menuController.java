@@ -131,6 +131,12 @@ public class menuController {
             //If someone changes the person we load the new conversation
             @Override
             public void handle(MouseEvent event) {
+
+                //If the scope is set, than we need to remove active listener from that scope
+                if (scope != null && clientBackend.history(scope) != null){
+                    clientBackend.history(scope).removeListener(menuController.this::reloadMessage);
+                }
+
                 clientName.setText((String) onlineList.getSelectionModel().getSelectedItem());
                 scope = (String) onlineList.getSelectionModel().getSelectedItem();
                 messageArea.getItems().clear();
@@ -139,6 +145,7 @@ public class menuController {
                 if (newConversation != null){
                     newConversation.forEach((message)->messageArea.getItems().add(message));
                 }
+                clientBackend.history(scope).addListener(menuController.this::reloadMessage);
             }
         });
     }
@@ -209,12 +216,35 @@ public class menuController {
             }
         });
         for (String user : observableClients) {
+            if (user.equals(clientBackend.getName())){
+                continue;
+            }
             Platform.runLater(new Runnable() {
                 public void run() {
                     onlineList.getItems().add(user);
                 }
             });
         }
+    }
+    //Reload current message area, this is fired when we get message by our scope client
+    @FXML
+    public void reloadMessage(
+        ListChangeListener.Change<? extends String> change) {
+        Platform.runLater(new Runnable() {
+            public void run() {
+                messageArea.getItems().clear();
+            }
+        });
+
+        Platform.runLater(new Runnable() {
+            public void run() {
+                ObservableList<String> newConversation = clientBackend.history((String)
+                        onlineList.getSelectionModel().getSelectedItem());
+                if (newConversation != null){
+                    newConversation.forEach((message)->messageArea.getItems().add(message));
+                }
+            }
+        });
     }
 
     //Firea a basic alert with the given text

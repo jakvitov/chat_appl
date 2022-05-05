@@ -6,6 +6,7 @@ import Client.Encryption.MessageCrypt;
 import Client.History.Archive;
 import Client.History.connectedData;
 import DataStructures.logState;
+import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 public class ClientBackend {
 
     private boolean loggedIn;
-    private String clientName;
     private String serverIP;
     private Socket clientSocket;
     private Logger logger;
@@ -37,7 +37,6 @@ public class ClientBackend {
 
     public ClientBackend(){
         this.loggedIn = false;
-        this.clientName = "Not set yet!";
         this.serverIP = "Not connected to any servers yet!";
     }
 
@@ -89,7 +88,7 @@ public class ClientBackend {
         this.messenger.message(targetName, message);
     }
 
-    public ArrayList<String> history(String target){
+    public ObservableList<String> history(String target){
         return this.archive.getConversationList(target);
     }
 
@@ -100,6 +99,14 @@ public class ClientBackend {
             return new String("You are currently not\nconnected to any server!");
         }
         else return new String("Server IP: " + this.currentInfo.serverIP + "\nUsername: " + this.currentInfo.name);
+    }
+
+    //Return our current username
+    public String getName(){
+        if (this.loggedIn == false){
+            return new String("Not logged in yet.");
+        }
+        else return this.currentInfo.name;
     }
 
 }

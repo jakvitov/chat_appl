@@ -88,6 +88,7 @@ public class MessageListener implements Runnable {
                 observableClients.clear();
                 message.getServerActiveList().forEach((user)->activeClients.add(user));
                 message.getServerActiveList().forEach((user)->observableClients.add(user));
+                this.archive.innitEmptyList(message.getServerActiveList());
             }
             else if (message.getType().equals(messageType.TEXT)){
                 if (this.silent == false) {
