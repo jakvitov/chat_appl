@@ -4,6 +4,7 @@ import Client.ClientBackend;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -133,11 +134,10 @@ public class menuController {
                 clientName.setText((String) onlineList.getSelectionModel().getSelectedItem());
                 scope = (String) onlineList.getSelectionModel().getSelectedItem();
                 messageArea.getItems().clear();
-                ArrayList<String> newConversation = clientBackend.history((String) onlineList.getSelectionModel().getSelectedItem());
+                ObservableList<String> newConversation = clientBackend.history((String)
+                        onlineList.getSelectionModel().getSelectedItem());
                 if (newConversation != null){
-                    for (String message : newConversation){
-                     messageArea.getItems().add(message);
-                    }
+                    newConversation.forEach((message)->messageArea.getItems().add(message));
                 }
             }
         });
