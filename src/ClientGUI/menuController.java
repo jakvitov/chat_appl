@@ -67,6 +67,11 @@ public class menuController {
     @FXML
     private Label clientName;
 
+    @FXML
+    private MenuBar usernameBox;
+
+    @FXML
+    private Menu username;
 
     @FXML
     protected void showInfo(){
@@ -78,6 +83,7 @@ public class menuController {
         if (this.clientBackend.isLoggedIn() == false){
             return;
         }
+        this.username.setText("Offline");
         this.clientName.setText("");
         this.clientBackend.logOut();
         Platform.runLater(new Runnable() {
@@ -180,6 +186,7 @@ public class menuController {
                     return;
                 }
                 this.clientName.setText("");
+                this.username.setText(clientBackend.getName());
             });
         }
         catch (IOException IOE){

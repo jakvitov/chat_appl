@@ -7,6 +7,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -18,26 +19,6 @@
          </font>
       </TextField>
    </bottom>
-   <top>
-      <MenuBar fx:id="menuBar" style="-fx-font-size: 20; -fx-font-family: &quot;Roboto&quot;;" BorderPane.alignment="CENTER">
-        <menus>
-            <Menu fx:id="logInMenu" mnemonicParsing="false" text="LogIn">
-              <items>
-                <MenuItem fx:id="logInButton" mnemonicParsing="false" onAction="#logInAction" text="LogIn" />
-              </items>
-            </Menu>
-          <Menu fx:id="logoutButton" mnemonicParsing="false" onAction="#logOutAction" text="LogOut">
-               <items>
-                  <MenuItem fx:id="logout" mnemonicParsing="false" text="LogOut" />
-                  <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeClient" text="Close client" />
-               </items></Menu>
-          <Menu fx:id="serverInfo" mnemonicParsing="false" text="Server Info">
-               <items>
-                  <MenuItem fx:id="serverInfoButton" mnemonicParsing="false" onAction="#showInfo" text="Server info" />
-               </items></Menu>
-        </menus>
-      </MenuBar>
-   </top>
    <center>
       <VBox prefHeight="392.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <children>
@@ -62,4 +43,39 @@
          </children>
       </VBox>
    </right>
+   <top>
+      <HBox prefHeight="41.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar fx:id="menuBar" prefHeight="72.0" prefWidth="666.0" style="-fx-font-size: 20; -fx-font-family: &quot;Roboto&quot;;">
+              <menus>
+                  <Menu fx:id="logInMenu" mnemonicParsing="false" text="LogIn">
+                    <items>
+                      <MenuItem fx:id="logInButton" mnemonicParsing="false" onAction="#logInAction" text="LogIn" />
+                    </items>
+                  </Menu>
+                <Menu fx:id="logoutButton" mnemonicParsing="false" onAction="#logOutAction" text="LogOut">
+                     <items>
+                        <MenuItem fx:id="logout" mnemonicParsing="false" text="LogOut" />
+                        <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeClient" text="Close client" />
+                     </items>
+                  </Menu>
+                <Menu fx:id="serverInfo" mnemonicParsing="false" text="Server Info">
+                     <items>
+                        <MenuItem fx:id="serverInfoButton" mnemonicParsing="false" onAction="#showInfo" text="Server info" />
+                     </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+            <MenuBar fx:id="usernameBox" prefHeight="43.0" prefWidth="195.0" style="-fx-font-size: 20; -fx-font-family: &quot;Roboto&quot;;">
+              <menus>
+                <Menu fx:id="username" mnemonicParsing="false" text="Offline">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </HBox>
+   </top>
 </BorderPane>
