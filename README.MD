@@ -1,8 +1,25 @@
-# About project
-This project contains a message application that runs in a console. You can find here both the server and the client, so you can deploy the server application on a public IP or just in a local network. The project is still under development and not finished.
+># About project
+>This project contains a message application that runs in a console. You can find here both the server and the client, so you can deploy the server application on a public IP or just in a local network.
 
-TODO:
-- M̶a̶k̶e̶ ̶l̶o̶g̶i̶n̶ ̶w̶i̶n̶d̶o̶w̶ ̶i̶n̶ ̶t̶h̶e̶ ̶G̶U̶I̶ ̶w̶o̶r̶k̶ - DONE
-- M̶a̶k̶e̶ ̶s̶e̶r̶v̶e̶r̶ ̶i̶n̶f̶o̶ ̶t̶a̶b̶ ̶w̶o̶r̶k̶ - DONE
-- Make autoupdate in the current chatting window - CURRENTLY IN PROGRESS
-- Create activity notifications window
+>#Usage
+>The project offers three main intefaces for you to chose from:
+>- ServerInterface - Launching this class creates a server application, that 
+   > listens on the current ip, the default port is 3001
+> - ChatGGUIInterface - This launches a classic GUI client interface that communicates
+   with the Server application once you start to log in
+> - ClientInterface - A smaller console version of the client interface, that
+> allows you to communicate with people on the given server just using a console
+
+>#Security
+> Extremely high security is not the main goal of this project, servers are self deployable so there is no
+> server signing of the messages nor asymetric encryption. All messages between users are 
+> encrypted using AES symmetric cypher. The keys are derived form the usernames of the users, which makes the keys obtainable
+> for a possible attacker. This problem can be solved via later implementation
+> of the Diffie-Hellman key exchange between users/server.
+
+>#Controlls
+> Both console applications have commands to display info about all available commands. Server has "?"/"help" command,
+> the client has "help".
+
+>#Installation
+> The project needs to be compiled with all its external dependencies, which consist of GUI library JavaFX.
