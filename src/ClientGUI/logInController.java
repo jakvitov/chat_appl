@@ -12,6 +12,10 @@ import static ClientGUI.menuController.clientBackend;
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.CHARTREUSE;
 
+/**
+ * A GUI controller class for the log in screen.
+ */
+
 public class logInController {
 
     @FXML
@@ -26,9 +30,10 @@ public class logInController {
     @FXML
     private Button loginButton;
 
+    //This is fired when the log in button is pressed
     @FXML
     protected void loginPress() {
-
+        //If we are already logged in we do nothing
         if (clientBackend.isLoggedIn()) {
             return;
         }
@@ -56,6 +61,8 @@ public class logInController {
             logInError.setText("Given server is offline!");
             return;
         }
+        //In case we sucessfully logged in
+        //Note that logInError is also used to display positive response, just the color of the text changes
         logInError.setVisible(true);
         logInError.setTextFill(BLACK);
         logInError.setText("Sucessfully logged in!");

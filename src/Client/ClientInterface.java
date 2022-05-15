@@ -46,6 +46,7 @@ public class ClientInterface {
         return archive;
     }
 
+    //We setup the connection with the server in the constructor
     public ClientInterface (){
         this.scan = new Scanner(System.in);
         System.out.println("Enter your name: ");
@@ -81,6 +82,7 @@ public class ClientInterface {
         return this.clientOutput;
     }
 
+    //Scan client name and try to log him in to the server
     public void logIn() {
         while (this.logger.logIn(this.name) == false){
             System.out.println("Enter your name: ");
@@ -88,12 +90,17 @@ public class ClientInterface {
             wait(100);
         }
     }
+
+    //Log the client out
     public void logOut(){
         this.logger.logOut();
     }
+
+    //Send a message to another client
     public void message(){
         this.messenger.sendMessage();
     }
+
     public static void main(String[] args) {
         ClientInterface client = new ClientInterface();
         Manual man = new Manual();

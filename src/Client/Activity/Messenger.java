@@ -20,16 +20,17 @@ public class Messenger {
     private Archive archive;
     private MessageCrypt crypt;
 
+    //Constructor with the input scanner, - we take user input later - CLI
     public Messenger (ObjectOutputStream clientOutput, ObjectInputStream clientInput, Scanner scanner, Archive archive
-    ,MessageCrypt crypt){
-            this.clientIntput = clientInput;
-            this.clientOutput = clientOutput;
-            this.scanner = scanner;
-            this.archive = archive;
-            this.crypt = crypt;
+            ,MessageCrypt crypt){
+        this.clientIntput = clientInput;
+        this.clientOutput = clientOutput;
+        this.scanner = scanner;
+        this.archive = archive;
+        this.crypt = crypt;
     }
 
-    //A constructor for the class without input scanner - we do not take user input, just send over the messages
+    //A constructor for the class without input scanner - we do not take user input, just send over the messages (GUI)
     public Messenger (ObjectOutputStream clientOutput, ObjectInputStream clientInput, Archive archive
             ,MessageCrypt crypt){
         this.clientIntput = clientInput;
@@ -38,7 +39,8 @@ public class Messenger {
         this.crypt = crypt;
     }
 
-    //A method used to send a simple text message to client later used in run method
+    //Given output stream, target and text, send message to that given output stream, usually called by the
+    //message method
     public void sendTextMessage(ObjectOutputStream ooe, String target, String text){
         try {
             Message message = new Message(messageType.TEXT, target , text);
@@ -50,6 +52,7 @@ public class Messenger {
         }
     }
 
+    //A method for the CLI client to scan a message form the terminal and send it
     public void sendMessage(){
         System.out.println("Insert username of who you want to message: ");
         String target = scanner.nextLine();
@@ -61,6 +64,7 @@ public class Messenger {
         this.archive.addOutMessage(target, message);
     }
 
+    //Send text message to the given target
     public void message(String target, String message){
         String targetID = Integer.toString(target.hashCode());
         String finalMessage = crypt.encryptMessage(target,message);

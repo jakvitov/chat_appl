@@ -9,6 +9,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Launch class for the client GUI.
+ */
+
 public class ChatGUIInterface extends Application {
 
     @Override

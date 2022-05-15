@@ -1,5 +1,9 @@
 package Client.History;
 
+/**
+ * Simple data class holding the info about current loggen in client
+ */
+
 public class connectedData {
 
     public String name;

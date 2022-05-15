@@ -12,7 +12,7 @@ import static Client.MessageListener.observableClients;
 
 /**
  * This is a class which is responsible to log client in and log him out
- * This class is mostly used by the ClientInterface to do its job
+ * This class is mostly used by the ClientInterface
  */
 
 public class Logger {
@@ -63,6 +63,7 @@ public class Logger {
         }
     }
 
+    //Log the user out
     public void logOut(){
         System.out.println("Logging out...");
         try {

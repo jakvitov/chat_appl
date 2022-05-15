@@ -19,7 +19,7 @@ public class Crypt {
 
     private final String algo = "AES/CBC/PKCS5Padding";
 
-    //A method used to generate our encryption key using the given seed
+    //Given a hash string generate secret key from it
     public SecretKey createKey (String hash){
 
         byte [] inputHash = hash.getBytes(StandardCharsets.UTF_8);
@@ -34,14 +34,11 @@ public class Crypt {
         }
 
         SecureRandom random = new SecureRandom(inputHash);
-
         keygen.init(256, random);
-
         return keygen.generateKey();
-
     }
 
-    //Get key from name
+    //Given an username and salt, return a secret key generated from them
     public SecretKey getKeyFromName(String name, String salt){
         try {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
@@ -55,6 +52,8 @@ public class Crypt {
         return null;
     }
 
+    //Given a client name, create initialization vector for the AES algo and return it as a  byte array,
+    //In case the vector is too short, fill it to match 16 bytes long
     public byte [] createInitializationVector (String name){
         byte [] hash = Integer.toString(name.hashCode()).getBytes();
         byte [] result = new byte[16];
@@ -69,10 +68,10 @@ public class Crypt {
                 result[i] = '1';
             }
         }
-
         return result;
     }
 
+    //Given a  string, secret key and init Vector - return the encrypted string
     public String encrypt(String source, SecretKey key, byte [] initVector){
 
         Cipher cipher;
@@ -100,6 +99,7 @@ public class Crypt {
         }
     }
 
+    //Given a  string, secret key and init Vector - return the decrypted string
     public String decrypt(String cipherText, SecretKey key, byte [] initVector){
 
         Cipher cipher;

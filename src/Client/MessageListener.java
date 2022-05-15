@@ -28,6 +28,7 @@ public class MessageListener implements Runnable {
     public static Set<String> activeClients;
     public static ObservableList<String> observableClients;
 
+    //Version used by the console version of the client, causes all the output to be displayed in the CLI
     MessageListener(ObjectInputStream clientInput, Archive archive, MessageCrypt crypt){
         activeClients = new HashSet<String>();
         observableClients = FXCollections.observableArrayList();
@@ -37,7 +38,7 @@ public class MessageListener implements Runnable {
         this.silent = false;
     }
 
-
+    //Version used by the client GUI, output is handled by the clientBackend
     MessageListener(ObjectInputStream clientInput, Archive archive, MessageCrypt crypt, boolean silent){
         activeClients = new HashSet<String>();
         this.clientInput = clientInput;
@@ -46,10 +47,13 @@ public class MessageListener implements Runnable {
         this.silent = true;
     }
 
+    //Listen to new messages in a loop and classify them
     @Override
     public void run () {
         while (true){
+
             Message message = new Message();
+
             try {
                 message = (Message) this.clientInput.readObject();
             }
@@ -67,16 +71,19 @@ public class MessageListener implements Runnable {
                 System.out.println("Error while reading the message from the socket!");
                 IOE.printStackTrace();
             }
+
             if (message == null || message.getType().equals(messageType.EMPTY)){
                 continue;
             }
             else if (message.getType().equals(messageType.MESSAGE_OK)){
+                //The GUI version currently runs on UDP protocol, therefore there are no confirmations
                 if (this.silent == true) {
                     continue;
                 }
                 System.out.println("Message was delivered all right!");
             }
             else if (message.getType().equals(messageType.WRONG_FORMAT)){
+                //The GUI version currently runs on UDP protocol, therefore there are no confirmations
                 if (this.silent == true) {
                     continue;
                 }
@@ -84,12 +91,14 @@ public class MessageListener implements Runnable {
             }
             //If the text contains token that indicates, that it contains names of online clients
             else if (message.getType().equals(messageType.ACTIVE)){
+                //We clear all the lists with the active client names
                 activeClients.clear();
                 observableClients.clear();
                 message.getServerActiveList().forEach((user)->activeClients.add(user));
                 message.getServerActiveList().forEach((user)->observableClients.add(user));
                 this.archive.innitEmptyList(message.getServerActiveList());
             }
+            //If the message contains text from one user to another
             else if (message.getType().equals(messageType.TEXT)){
                 if (this.silent == false) {
                     System.out.println("-------------------------------------------------");

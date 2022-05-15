@@ -10,7 +10,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 
-//Server interface represents the running server
+/**
+ *Class representing the Server interface - this launches the server application
+ */
 public class ServerInterface {
     private Thread console;
     public boolean stop = false;

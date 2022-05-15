@@ -44,7 +44,7 @@ public class ClientBackend {
         return this.loggedIn;
     }
 
-    //Log in to the given server with given name and return if we can
+    //Log in to the given server with given name and return our LogState after the attempt
     public logState logIn (String IP, String clientName){
         this.archive = new Archive();
         try{
@@ -76,7 +76,7 @@ public class ClientBackend {
 
     }
 
-    //Log us out
+    //Log the client out
     public void logOut (){
         this.archive = new Archive();
         this.loggedIn = false;
@@ -84,6 +84,7 @@ public class ClientBackend {
         this.logger.logOut();
     }
 
+    //Send a message to targetName including the message text
     public void message(String targetName, String message){
         this.messenger.message(targetName, message);
     }

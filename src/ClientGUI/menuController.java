@@ -17,18 +17,25 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.ArrayList;
-
 import static Client.MessageListener.observableClients;
+
+/**
+ * This is the GUI controller for the menu of the client GUI application.
+ */
+
 
 public class menuController {
 
+    //The user we are currently having a conversation with (selected user)
+    private String scope;
+    //A thread that takes care of drawing the online clients
+    private Thread onlineClients;
+
+    //Client backend that communicates with the menu controller
     public static ClientBackend clientBackend;
 
-    private String scope;
-    private Thread onlineClients;
 
     @FXML
     private BorderPane menuPane;
@@ -63,7 +70,6 @@ public class menuController {
     @FXML
     private MenuItem serverInfoButton;
 
-
     @FXML
     private Label clientName;
 
@@ -73,11 +79,13 @@ public class menuController {
     @FXML
     private Menu username;
 
+    //Triggered when server info button is pressed
     @FXML
     protected void showInfo(){
         showInfoWindow((Stage)clientName.getScene().getWindow());
     }
 
+    //Triggered when client selects log out button
     @FXML
     protected void logOutAction(){
         if (this.clientBackend.isLoggedIn() == false){
@@ -86,6 +94,7 @@ public class menuController {
         this.username.setText("Offline");
         this.clientName.setText("");
         this.clientBackend.logOut();
+        //Clear the current online clients list
         Platform.runLater(new Runnable() {
             public void run() {
                 onlineList.getItems().clear();
@@ -93,7 +102,8 @@ public class menuController {
             }
         });
     }
-
+    //This method is called by the showInfo, it opens new window including the information about the
+    //server and user
     protected void showInfoWindow(Stage primaryStage){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Resources/infoGUI.fxml"));
@@ -105,7 +115,6 @@ public class menuController {
             infoWindow.setX(primaryStage.getX() + 200);
             infoWindow.setY(primaryStage.getY() + 100);
             infoWindow.show();
-
         }
         catch (IOException IOE){
             System.out.println("Error while loading the login screen!");
@@ -118,8 +127,10 @@ public class menuController {
         System.exit(0);
     }
 
+    //This method is triggered when the client clicks log in button
     @FXML
     protected void logInAction (){
+        //We blur the main menu, this effect is reset after closing of the popup window
         ColorAdjust adj = new ColorAdjust(0,0,0,0);
         GaussianBlur blur = new GaussianBlur(10); // 55 is just to show edge effect more clearly.
         adj.setInput(blur);
@@ -128,16 +139,16 @@ public class menuController {
     }
 
     public void initialize(){
-
         clientBackend = new ClientBackend();
+        //List holding the online clients - it is updated when message containing new client list is received
+        //by the server
         observableClients = FXCollections.observableArrayList();
         //We setup click action on individual people
         onlineList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-            //If someone changes the person we load the new conversation
+            //If someone clicks on a person from the online list to chat with him
             @Override
             public void handle(MouseEvent event) {
-
                 //If the scope is set, than we need to remove active listener from that scope
                 if (scope != null && clientBackend.history(scope) != null){
                     clientBackend.history(scope).removeListener(menuController.this::reloadMessage);
@@ -146,11 +157,13 @@ public class menuController {
                 clientName.setText((String) onlineList.getSelectionModel().getSelectedItem());
                 scope = (String) onlineList.getSelectionModel().getSelectedItem();
                 messageArea.getItems().clear();
+                //We add new observable list containg the current conversation to the history
                 ObservableList<String> newConversation = clientBackend.history((String)
                         onlineList.getSelectionModel().getSelectedItem());
                 if (newConversation != null){
                     newConversation.forEach((message)->messageArea.getItems().add(message));
                 }
+                //When new message arrives we can rerender the list of the messages (message area)
                 clientBackend.history(scope).addListener(menuController.this::reloadMessage);
             }
         });
@@ -163,9 +176,7 @@ public class menuController {
             menuPane.setEffect(null);
             return;
         }
-
         try {
-            //clientBackend.logIn(Inet4Address.getLocalHost().getHostAddress(), "Petr");
             //Now we start listening to changes in the online list
             observableClients.addListener(this::reloadActiveList);
 
@@ -180,12 +191,14 @@ public class menuController {
             logInWindow.show();
             logInWindow.setUserData(clientBackend);
             logInWindow.setOnCloseRequest(event -> {
+                //Dispose of the blur in the menu
                 menuPane.setEffect(null);
                 //In case the client just shut down the loggin window without successful login we just return
                 if (this.clientBackend.isLoggedIn() == false){
                     return;
                 }
                 this.clientName.setText("");
+                //Display our current username after we logged in
                 this.username.setText(clientBackend.getName());
             });
         }
@@ -195,12 +208,14 @@ public class menuController {
         }
     }
 
+    //Triggered when the message text is typed in and sent
     @FXML
     protected void textAdded(){
         if (clientBackend.isLoggedIn() == false ){
             messageInput.clear();
             messageArea.getItems().add("Not logged in!");
         }
+        //Without a scope we cannot send a message - (to whom?)
         else if (this.scope == null) {
             String inputText = messageInput.getText();
             messageInput.clear();
@@ -214,6 +229,7 @@ public class menuController {
         }
     }
 
+    //Triggered when server sends us new online clients list -> we rerender our current depricated list
     @FXML
     public void reloadActiveList(
         ListChangeListener.Change<? extends String> change) {
@@ -260,7 +276,6 @@ public class menuController {
         alert.setTitle("Error");
         alert.setHeaderText("An error occured:");
         alert.setContentText(text);
-
         alert.showAndWait();
     }
 }

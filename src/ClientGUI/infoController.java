@@ -8,11 +8,14 @@ import javafx.stage.Stage;
 
 import static ClientGUI.menuController.clientBackend;
 
+/**
+ * A basic GUI controller for the window displaying the info about the server and user
+ */
+
 public class infoController {
 
     @FXML
     private Label serverInfoLabel;
-
 
     @FXML
     private Button serverInfoButton;
